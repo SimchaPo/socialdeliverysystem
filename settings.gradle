@@ -1,0 +1,2 @@
+rootProject.name='socialdeliverysystem'
+include ':app'
