@@ -12,4 +12,11 @@
     <string name="menu_slideshow">Slideshow</string>
 
     <string name="home_second">Home Second</string>
+    <string name="enter_youe_email">Enter Youe Email</string>
+    <string name="enter_your_password">Enter Your Password</string>
+    <string name="first_name">First Name</string>
+    <string name="last_name">Last Name</string>
+    <string name="enter_your_id_number">Enter Your ID Number</string>
+    <string name="enter_your_phone_number">Enter Your Phone Number</string>
+    <string name="enter_your_address">Enter Your Address</string>
 </resources>
