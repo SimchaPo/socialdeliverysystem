@@ -6,7 +6,7 @@
     android:layout_height="match_parent"
     android:orientation="vertical"
     android:padding="16dp"
-    tools:context=".LoginActivity"
+    tools:context=".ui.LoginActivity"
     android:gravity="center">
 
     <androidx.appcompat.widget.LinearLayoutCompat
@@ -17,7 +17,7 @@
         android:padding="16dp">
 
         <com.google.android.material.textfield.TextInputLayout
-            android:id="@+id/login_input_email"
+            android:id="@+id/login_input_phone"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             app:boxBackgroundMode="outline"
@@ -26,8 +26,8 @@
             <com.google.android.material.textfield.TextInputEditText
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:hint="@string/enter_youe_email"
-                android:inputType="textEmailAddress" />
+                android:hint="Enter Your Phone Number"
+                android:inputType="phone" />
 
         </com.google.android.material.textfield.TextInputLayout>
 
@@ -98,13 +98,17 @@
         android:background="@drawable/button_style"
         android:onClick="logInOnClick"
         android:text="@string/log_in" />
-    <Button
-        android:id="@+id/sign_in"
-        android:layout_width="match_parent"
+
+    <TextView
+        android:id="@+id/signInText"
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_centerInParent="true"
-        android:background="@drawable/button_style"
+        android:clickable="true"
+        android:contextClickable="false"
         android:onClick="SignInOnClick"
-        android:text="@string/sign_in" />
+        android:text="@string/don_t_have_an_account_sign_in"
+        android:textColor="@color/colorAccent"
+        android:textSize="20sp"
+        android:textStyle="bold" />
 
 </androidx.appcompat.widget.LinearLayoutCompat>

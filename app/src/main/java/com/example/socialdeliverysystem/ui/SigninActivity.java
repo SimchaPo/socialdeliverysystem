@@ -1,4 +1,4 @@
-package com.example.socialdeliverysystem;
+package com.example.socialdeliverysystem.ui;
 
 import androidx.appcompat.app.AppCompatActivity;
 
@@ -6,8 +6,14 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
 
+import com.example.socialdeliverysystem.R;
+import com.example.socialdeliverysystem.ui.LoginActivity;
+import com.firebase.ui.auth.AuthUI;
 import com.google.android.material.textfield.TextInputLayout;
+import com.google.firebase.auth.AuthCredential;
+import com.google.firebase.auth.GoogleAuthProvider;
 
+import java.util.Arrays;
 import java.util.regex.Pattern;
 
 public class SigninActivity extends AppCompatActivity {
@@ -19,7 +25,6 @@ public class SigninActivity extends AppCompatActivity {
     private TextInputLayout editTextIdSignin;
     private TextInputLayout editTextAddressSignin;
     private TextInputLayout editTextPasswordSignin;
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -145,4 +150,5 @@ public class SigninActivity extends AppCompatActivity {
         Intent logInActivity = new Intent(getApplicationContext(), LoginActivity.class);
         startActivity(logInActivity);
     }
+
 }
