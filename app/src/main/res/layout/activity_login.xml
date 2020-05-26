@@ -32,7 +32,9 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:hint="Enter E-Mail or Phone Number"
-                android:inputType="text" />
+                android:inputType="text"
+                />
+
         </com.google.android.material.textfield.TextInputLayout>
 
             <Button
@@ -69,10 +71,12 @@
                     android:hint="@string/enter_your_password"
                     android:inputType="textPassword" />
             </com.google.android.material.textfield.TextInputLayout>
+
                 <TextView
                     android:id="@+id/reset_password"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
+                    android:layout_gravity="center"
                     android:clickable="true"
                     android:contextClickable="false"
                     android:onClick="resetPasswordOnClick"
@@ -101,10 +105,12 @@
                     android:inputType="number" />
 
             </com.google.android.material.textfield.TextInputLayout>
+
                 <TextView
                     android:id="@+id/try_email"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
+                    android:layout_gravity="center"
                     android:clickable="true"
                     android:contextClickable="false"
                     android:onClick="GoBackOnClick"
@@ -122,7 +128,7 @@
                 android:text="@string/go_back" />
 
     <Button
-        android:id="@+id/Log_in"
+        android:id="@+id/log_in_btn"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_centerInParent="true"
@@ -135,10 +141,13 @@
             android:id="@+id/signInText"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:layout_gravity="center"
             android:clickable="true"
             android:contextClickable="false"
+            android:hint="Click To Sign In"
             android:onClick="SignInOnClick"
             android:text="@string/don_t_have_an_account_sign_in"
+            android:textAllCaps="false"
             android:textColor="@color/colorAccent"
             android:textSize="20sp"
             android:textStyle="bold" />

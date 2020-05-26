@@ -3,10 +3,13 @@ package com.example.socialdeliverysystem.ui;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.LinearLayoutCompat;
+
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
+import android.widget.Button;
 import android.widget.Toast;
+
 import com.example.socialdeliverysystem.R;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
@@ -16,7 +19,6 @@ import com.google.firebase.FirebaseException;
 import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseAuthInvalidCredentialsException;
-import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.auth.PhoneAuthCredential;
 import com.google.firebase.auth.PhoneAuthProvider;
 import com.google.firebase.auth.SignInMethodQueryResult;
@@ -37,6 +39,7 @@ public class LoginActivity extends AppCompatActivity {
     private String mVerificationId;
     private FirebaseAuth mAuth;
     private String phoneOrMailText;
+    private Button logInBtn;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -54,6 +57,7 @@ public class LoginActivity extends AppCompatActivity {
         codeEntryLayout = findViewById(R.id.code_entry);
         editCode = findViewById(R.id.login_input_sms);
         mAuth = FirebaseAuth.getInstance();
+        logInBtn = findViewById(R.id.log_in_btn);
     }
 
     public void SignInOnClick(View view) {
@@ -105,7 +109,7 @@ public class LoginActivity extends AppCompatActivity {
                     @Override
                     public void onComplete(@NonNull Task<AuthResult> task) {
                         if (task.isSuccessful()) {
-
+                            //Go to Activity
                         } else {
                             String message = "Somthing is wrong, we will fix it soon...";
 
@@ -118,7 +122,7 @@ public class LoginActivity extends AppCompatActivity {
     }
 
     public void OpenTextBoxForCodeOrPassword(View view) {
-        phoneOrMailText = editTextPhoneOrMailLogIn.getEditText().getText().toString();
+        phoneOrMailText = editTextPhoneOrMailLogIn.getEditText().getText().toString().trim();
         if (phoneOrMailText.isEmpty()) {
             editTextPhoneOrMailLogIn.setError("Email or Phone Number is Required");
             return;
@@ -130,8 +134,7 @@ public class LoginActivity extends AppCompatActivity {
                         public void onComplete(@NonNull Task<SignInMethodQueryResult> task) {
                             if (task.getResult().getSignInMethods().isEmpty()) {
                                 editTextPhoneOrMailLogIn.setError("No Such User, Please Sign In");
-                            }
-                            else {
+                            } else {
                                 email = true;
                                 phone = false;
                                 textBoxPhoneOrMailLayout.setVisibility(View.GONE);
@@ -144,7 +147,7 @@ public class LoginActivity extends AppCompatActivity {
         }
         Pattern phonePattern = Pattern.compile("0([23489]|5[0123458]|77)([0-9]{7})");
         if (phonePattern.matcher(phoneOrMailText).matches()) {
-            //To do - check if phone number is registed
+            //To do - check if phone number is registered
             phone = true;
             email = false;
             textBoxPhoneOrMailLayout.setVisibility(View.GONE);
@@ -178,9 +181,11 @@ public class LoginActivity extends AppCompatActivity {
     }
 
     public void logInOnClick(View view) {
+        logInBtn.setEnabled(false);
         if (email) {
-            if(editPassword.getEditText() .getText().toString().isEmpty()){
+            if (editPassword.getEditText().getText().toString().isEmpty()) {
                 editPassword.setError("Please Enter Password");
+                logInBtn.setEnabled(true);
                 return;
             }
             mAuth.signInWithEmailAndPassword(phoneOrMailText, editPassword.getEditText().getText().toString())
@@ -188,9 +193,10 @@ public class LoginActivity extends AppCompatActivity {
                         @Override
                         public void onComplete(@NonNull Task<AuthResult> task) {
                             if (task.isSuccessful()) {
-                                if(mAuth.getCurrentUser().isEmailVerified()){
+                                editPassword.setError(null);
+                                if (mAuth.getCurrentUser().isEmailVerified()) {
                                     //startActivity
-                                } else{
+                                } else {
                                     Toast.makeText(LoginActivity.this, "Please Verify Your Email Address",
                                             Toast.LENGTH_LONG).show();
                                 }
@@ -198,12 +204,14 @@ public class LoginActivity extends AppCompatActivity {
                             } else {
                                 Toast.makeText(LoginActivity.this, "Authentication failed.",
                                         Toast.LENGTH_LONG).show();
+                                logInBtn.setEnabled(true);
                             }
                         }
                     });
         } else if (phone) {
-            if(editCode.getEditText().getText().toString().isEmpty()){
+            if (editCode.getEditText().getText().toString().isEmpty()) {
                 editCode.setError("Please Enter Code");
+                logInBtn.setEnabled(true);
                 return;
             }
             verifyVerificationCode(editCode.getEditText().getText().toString());
