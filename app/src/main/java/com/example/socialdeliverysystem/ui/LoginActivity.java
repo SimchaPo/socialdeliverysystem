@@ -4,6 +4,7 @@ import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.LinearLayoutCompat;
 
+import android.app.Dialog;
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
@@ -201,6 +202,12 @@ public class LoginActivity extends AppCompatActivity {
                         @Override
                         public void onComplete(@NonNull Task<AuthResult> task) {
                             if (task.isSuccessful()) {
+                                if(mAuth.getCurrentUser().isEmailVerified()){
+                                    //startActivity
+                                } else{
+                                    Toast.makeText(LoginActivity.this, "Please Verify Your Email Address",
+                                            Toast.LENGTH_LONG).show();
+                                }
                                 // Sign in success, update UI with the signed-in user's information
                                 FirebaseUser user = mAuth.getCurrentUser();
                             } else {
