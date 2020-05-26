@@ -3,13 +3,10 @@ package com.example.socialdeliverysystem.ui;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.LinearLayoutCompat;
-
-import android.app.Dialog;
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.Toast;
-
 import com.example.socialdeliverysystem.R;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
@@ -42,13 +39,10 @@ public class LoginActivity extends AppCompatActivity {
     private String phoneOrMailText;
 
     @Override
-
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_login);
         findView();
-        FirebaseUser currentUser = mAuth.getCurrentUser();
-
     }
 
     private void findView() {
@@ -80,15 +74,9 @@ public class LoginActivity extends AppCompatActivity {
     private PhoneAuthProvider.OnVerificationStateChangedCallbacks mCallbacks = new PhoneAuthProvider.OnVerificationStateChangedCallbacks() {
         @Override
         public void onVerificationCompleted(PhoneAuthCredential phoneAuthCredential) {
-            //Getting the code sent by SMS
             String code = phoneAuthCredential.getSmsCode();
-
-            //sometime the code is not detected automatically
-            //in this case the code will be null
-            //so user has to manually enter the code
             if (code != null) {
                 editCode.getEditText().setText(code);
-                //verifying the code
                 verifyVerificationCode(code);
             }
         }
@@ -107,10 +95,7 @@ public class LoginActivity extends AppCompatActivity {
     };
 
     private void verifyVerificationCode(String otp) {
-        //creating the credential
         PhoneAuthCredential credential = PhoneAuthProvider.getCredential(mVerificationId, otp);
-
-        //signing the user
         signInWithPhoneAuthCredential(credential);
     }
 
@@ -122,9 +107,6 @@ public class LoginActivity extends AppCompatActivity {
                         if (task.isSuccessful()) {
 
                         } else {
-
-                            //verification unsuccessful.. display an error message
-
                             String message = "Somthing is wrong, we will fix it soon...";
 
                             if (task.getException() instanceof FirebaseAuthInvalidCredentialsException) {
@@ -197,6 +179,10 @@ public class LoginActivity extends AppCompatActivity {
 
     public void logInOnClick(View view) {
         if (email) {
+            if(editPassword.getEditText() .getText().toString().isEmpty()){
+                editPassword.setError("Please Enter Password");
+                return;
+            }
             mAuth.signInWithEmailAndPassword(phoneOrMailText, editPassword.getEditText().getText().toString())
                     .addOnCompleteListener(this, new OnCompleteListener<AuthResult>() {
                         @Override
@@ -208,16 +194,18 @@ public class LoginActivity extends AppCompatActivity {
                                     Toast.makeText(LoginActivity.this, "Please Verify Your Email Address",
                                             Toast.LENGTH_LONG).show();
                                 }
-                                // Sign in success, update UI with the signed-in user's information
-                                FirebaseUser user = mAuth.getCurrentUser();
+                                //FirebaseUser user = mAuth.getCurrentUser();
                             } else {
-                                // If sign in fails, display a message to the user.
                                 Toast.makeText(LoginActivity.this, "Authentication failed.",
                                         Toast.LENGTH_LONG).show();
                             }
                         }
                     });
         } else if (phone) {
+            if(editCode.getEditText().getText().toString().isEmpty()){
+                editCode.setError("Please Enter Code");
+                return;
+            }
             verifyVerificationCode(editCode.getEditText().getText().toString());
         }
         return;
