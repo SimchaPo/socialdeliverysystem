@@ -7,7 +7,6 @@ import androidx.appcompat.widget.LinearLayoutCompat;
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
-import android.widget.EditText;
 import android.widget.Toast;
 
 import com.example.socialdeliverysystem.R;
@@ -20,74 +19,46 @@ import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseAuthInvalidCredentialsException;
 import com.google.firebase.auth.FirebaseUser;
-import com.google.firebase.auth.GetTokenResult;
 import com.google.firebase.auth.PhoneAuthCredential;
 import com.google.firebase.auth.PhoneAuthProvider;
-import com.google.firebase.database.DatabaseReference;
-import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.auth.SignInMethodQueryResult;
 
 import java.util.concurrent.TimeUnit;
+import java.util.regex.Pattern;
 
 public class LoginActivity extends AppCompatActivity {
-    private TextInputLayout editTextPhoneLogin;
-    private TextInputLayout editTextPasswordLogin;
-    private TextInputLayout getEditTextSmsLogin;
-    private LinearLayoutCompat loginLayout;
-    private LinearLayoutCompat sms_login;
-    private LinearLayoutCompat password_login;
-
-    private PhoneAuthProvider.ForceResendingToken mResendToken;
+    private TextInputLayout editTextPhoneOrMailLogIn;
+    private LinearLayoutCompat textBoxPhoneOrMailLayout;
+    private LinearLayoutCompat passwordOrCodeEntryLayout;
+    private LinearLayoutCompat passwordEntryLayout;
+    private TextInputLayout editPassword;
+    private LinearLayoutCompat codeEntryLayout;
+    private TextInputLayout editCode;
+    private boolean phone;
+    private boolean email;
     private String mVerificationId;
-    private EditText editTextCode;
     private FirebaseAuth mAuth;
-
+    private String phoneOrMailText;
 
     @Override
+
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_login);
         findView();
-        mAuth = FirebaseAuth.getInstance();
-        sms_login.setVisibility(View.GONE);
+        FirebaseUser currentUser = mAuth.getCurrentUser();
+
     }
 
     private void findView() {
-        editTextPhoneLogin = findViewById(R.id.login_input_phone);
-        editTextPasswordLogin = findViewById(R.id.login_input_password);
-        getEditTextSmsLogin = findViewById(R.id.login_input_sms);
-        loginLayout = findViewById(R.id.login_layout);
-        sms_login = findViewById(R.id.sms_entry);
-        password_login = findViewById(R.id.password_entry);
-
-    }
-
-    public void logInOnClick(View view) {
-        return;
-    }
-
-    public void logInSmsOnClick(View view) {
-        if (!checkPhoneEditTextBox(editTextPhoneLogin.getEditText().getText().toString())) {
-            editTextPhoneLogin.setError("PHONE NUMBER NOT CORRECT!");
-            return;
-        }
-        editTextPhoneLogin.setEnabled(false);
-        editTextPasswordLogin.getEditText().getText().clear();
-        password_login.setVisibility(View.GONE);
-        sms_login.setVisibility(View.VISIBLE);
-        sendVerificationCode(editTextPhoneLogin.getEditText().getText().toString().trim());
-    }
-
-    private boolean checkPhoneEditTextBox(String toString) {
-        //To Do!!
-        return true;
-    }
-
-    public void logInPasswordOnClick(View view) {
-        editTextPhoneLogin.setEnabled(true);
-        getEditTextSmsLogin.getEditText().getText().clear();
-        sms_login.setVisibility(View.GONE);
-        password_login.setVisibility(View.VISIBLE);
-
+        editTextPhoneOrMailLogIn = findViewById(R.id.login_input_phone_mail);
+        textBoxPhoneOrMailLayout = findViewById(R.id.email_or_phone_layout);
+        passwordOrCodeEntryLayout = findViewById(R.id.password_code_entry);
+        passwordEntryLayout = findViewById(R.id.password_entry);
+        editPassword = findViewById(R.id.login_input_password);
+        codeEntryLayout = findViewById(R.id.code_entry);
+        editCode = findViewById(R.id.login_input_sms);
+        mAuth = FirebaseAuth.getInstance();
     }
 
     public void SignInOnClick(View view) {
@@ -115,7 +86,7 @@ public class LoginActivity extends AppCompatActivity {
             //in this case the code will be null
             //so user has to manually enter the code
             if (code != null) {
-                getEditTextSmsLogin.getEditText().setText(code);
+                editCode.getEditText().setText(code);
                 //verifying the code
                 verifyVerificationCode(code);
             }
@@ -130,9 +101,7 @@ public class LoginActivity extends AppCompatActivity {
         public void onCodeSent(String s, PhoneAuthProvider.ForceResendingToken forceResendingToken) {
             super.onCodeSent(s, forceResendingToken);
             mVerificationId = s;
-            mResendToken = forceResendingToken;
-            //   resendVerificationCode(editTextPhoneLogin.getEditText().getText().toString().trim(), mResendToken);
-
+            PhoneAuthProvider.ForceResendingToken mResendToken = forceResendingToken;
         }
     };
 
@@ -150,10 +119,6 @@ public class LoginActivity extends AppCompatActivity {
                     @Override
                     public void onComplete(@NonNull Task<AuthResult> task) {
                         if (task.isSuccessful()) {
-                            //verification successful we will start the profile activity
-                            //  Intent intent = new Intent(LoginActivity.this, MainActivity.class);
-                            //  intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
-                            //  startActivity(intent);
 
                         } else {
 
@@ -164,17 +129,90 @@ public class LoginActivity extends AppCompatActivity {
                             if (task.getException() instanceof FirebaseAuthInvalidCredentialsException) {
                                 message = "Invalid code entered...";
                             }
-
-                            //Snackbar snackbar = Snackbar.make(findViewById(R.id.parent), message, Snackbar.LENGTH_LONG);
-                            //snackbar.setAction("Dismiss", new View.OnClickListener() {
-                            //    @Override
-                            //    public void onClick(View v) {
-
-                            //    }
-                            //});
-                            //snackbar.show();
                         }
                     }
                 });
+    }
+
+    public void OpenTextBoxForCodeOrPassword(View view) {
+        phoneOrMailText = editTextPhoneOrMailLogIn.getEditText().getText().toString();
+        if (phoneOrMailText.isEmpty()) {
+            editTextPhoneOrMailLogIn.setError("Email or Phone Number is Required");
+            return;
+        }
+        if (android.util.Patterns.EMAIL_ADDRESS.matcher(phoneOrMailText).matches()) {
+            mAuth.fetchSignInMethodsForEmail(phoneOrMailText)
+                    .addOnCompleteListener(new OnCompleteListener<SignInMethodQueryResult>() {
+                        @Override
+                        public void onComplete(@NonNull Task<SignInMethodQueryResult> task) {
+                            if (task.getResult().getSignInMethods().isEmpty()) {
+                                editTextPhoneOrMailLogIn.setError("No Such User, Please Sign In");
+                            }
+                            else {
+                                email = true;
+                                phone = false;
+                                textBoxPhoneOrMailLayout.setVisibility(View.GONE);
+                                passwordOrCodeEntryLayout.setVisibility(View.VISIBLE);
+                                passwordEntryLayout.setVisibility(View.VISIBLE);
+                            }
+                        }
+                    });
+            return;
+        }
+        Pattern phonePattern = Pattern.compile("0([23489]|5[0123458]|77)([0-9]{7})");
+        if (phonePattern.matcher(phoneOrMailText).matches()) {
+            //To do - check if phone number is registed
+            phone = true;
+            email = false;
+            textBoxPhoneOrMailLayout.setVisibility(View.GONE);
+            passwordOrCodeEntryLayout.setVisibility(View.VISIBLE);
+            codeEntryLayout.setVisibility(View.VISIBLE);
+            sendVerificationCode(phoneOrMailText);
+            return;
+        }
+        editTextPhoneOrMailLogIn.setError("Invalid Text");
+        editTextPhoneOrMailLogIn.getEditText().setText(null);
+    }
+
+    public void GoBackOnClick(View view) {
+        textBoxPhoneOrMailLayout.setVisibility(View.VISIBLE);
+        passwordOrCodeEntryLayout.setVisibility(View.GONE);
+        passwordEntryLayout.setVisibility(View.GONE);
+        codeEntryLayout.setVisibility(View.GONE);
+    }
+
+    public void resetPasswordOnClick(View view) {
+        FirebaseAuth.getInstance().sendPasswordResetEmail(phoneOrMailText)
+                .addOnCompleteListener(new OnCompleteListener<Void>() {
+                    @Override
+                    public void onComplete(@NonNull Task<Void> task) {
+                        if (task.isSuccessful()) {
+                            Toast.makeText(LoginActivity.this, "Mail For Reset Was Sent",
+                                    Toast.LENGTH_LONG).show();
+                        }
+                    }
+                });
+    }
+
+    public void logInOnClick(View view) {
+        if (email) {
+            mAuth.signInWithEmailAndPassword(phoneOrMailText, editPassword.getEditText().getText().toString())
+                    .addOnCompleteListener(this, new OnCompleteListener<AuthResult>() {
+                        @Override
+                        public void onComplete(@NonNull Task<AuthResult> task) {
+                            if (task.isSuccessful()) {
+                                // Sign in success, update UI with the signed-in user's information
+                                FirebaseUser user = mAuth.getCurrentUser();
+                            } else {
+                                // If sign in fails, display a message to the user.
+                                Toast.makeText(LoginActivity.this, "Authentication failed.",
+                                        Toast.LENGTH_LONG).show();
+                            }
+                        }
+                    });
+        } else if (phone) {
+            verifyVerificationCode(editCode.getEditText().getText().toString());
+        }
+        return;
     }
 }

@@ -17,10 +17,13 @@
     <string name="first_name">First Name</string>
     <string name="last_name">Last Name</string>
     <string name="enter_your_id_number">Enter Your ID Number</string>
-    <string name="enter_your_phone_number">Enter Your Phone Number</string>
     <string name="enter_your_address">Enter Your Address</string>
     <string name="log_in">Log In</string>
     <string name="sign_in">Sign In</string>
     <string name="get_code_in_sms">Get Code In Sms</string>
     <string name="don_t_have_an_account_sign_in">Don\'t have an account? sign in</string>
+    <string name="enter_your_phone_number">Enter Your Phone Number</string>
+    <string name="enter_code_from_sms">Enter Code From Sms</string>
+    <string name="switch_to_password_entry">Switch To Password Entry</string>
+    <string name="go_back">Go Back</string>
 </resources>

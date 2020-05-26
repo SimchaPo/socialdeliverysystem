@@ -15,9 +15,14 @@
         android:layout_height="wrap_content"
         android:orientation="vertical"
         android:padding="16dp">
-
+        <androidx.appcompat.widget.LinearLayoutCompat
+            android:id="@+id/email_or_phone_layout"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:padding="16dp">
         <com.google.android.material.textfield.TextInputLayout
-            android:id="@+id/login_input_phone"
+            android:id="@+id/login_input_phone_mail"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             app:boxBackgroundMode="outline"
@@ -26,17 +31,30 @@
             <com.google.android.material.textfield.TextInputEditText
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:hint="Enter Your Phone Number"
-                android:inputType="phone" />
-
+                android:hint="Enter E-Mail or Phone Number"
+                android:inputType="text" />
         </com.google.android.material.textfield.TextInputLayout>
 
+            <Button
+                android:id="@+id/OpenTextBoxForCodeOrPassword"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_centerInParent="true"
+                android:onClick="OpenTextBoxForCodeOrPassword"
+                android:text="Next" />
+        </androidx.appcompat.widget.LinearLayoutCompat>
         <androidx.appcompat.widget.LinearLayoutCompat
-            android:id="@+id/password_entry"
+            android:id="@+id/password_code_entry"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:orientation="vertical">
-
+            android:orientation="vertical"
+            android:visibility="gone">
+            <androidx.appcompat.widget.LinearLayoutCompat
+                android:id="@+id/password_entry"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                android:visibility="gone">
             <com.google.android.material.textfield.TextInputLayout
                 android:id="@+id/login_input_password"
                 android:layout_width="match_parent"
@@ -51,20 +69,24 @@
                     android:hint="@string/enter_your_password"
                     android:inputType="textPassword" />
             </com.google.android.material.textfield.TextInputLayout>
-            <Button
-                android:id="@+id/Log_in_sms"
+                <TextView
+                    android:id="@+id/reset_password"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:clickable="true"
+                    android:contextClickable="false"
+                    android:onClick="resetPasswordOnClick"
+                    android:text="Forgot Password? Click To Reset"
+                    android:textColor="@color/colorAccent"
+                    android:textSize="16sp"
+                    android:textStyle="bold" />
+            </androidx.appcompat.widget.LinearLayoutCompat>
+            <androidx.appcompat.widget.LinearLayoutCompat
+                android:id="@+id/code_entry"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_centerInParent="true"
-                android:onClick="logInSmsOnClick"
-                android:text="@string/get_code_in_sms" />
-        </androidx.appcompat.widget.LinearLayoutCompat>
-        <androidx.appcompat.widget.LinearLayoutCompat
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:orientation="vertical"
-            android:id="@+id/sms_entry">
-
+                android:orientation="vertical"
+                android:visibility="gone">
             <com.google.android.material.textfield.TextInputLayout
                 android:id="@+id/login_input_sms"
                 android:layout_width="match_parent"
@@ -75,20 +97,29 @@
                 <com.google.android.material.textfield.TextInputEditText
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:hint="Enter Code From Sms"
+                    android:hint="@string/enter_code_from_sms"
                     android:inputType="number" />
 
             </com.google.android.material.textfield.TextInputLayout>
-
+                <TextView
+                    android:id="@+id/try_email"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:clickable="true"
+                    android:contextClickable="false"
+                    android:onClick="GoBackOnClick"
+                    android:text="Didn't Receive a Code? Try Email Verify"
+                    android:textColor="@color/colorAccent"
+                    android:textSize="16sp"
+                    android:textStyle="bold" />
+            </androidx.appcompat.widget.LinearLayoutCompat>
             <Button
-                android:id="@+id/Login_password"
+                android:id="@+id/go_back"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_centerInParent="true"
-                android:onClick="logInPasswordOnClick"
-                android:text="Switch To Password Entry" />
-    </androidx.appcompat.widget.LinearLayoutCompat>
-    </androidx.appcompat.widget.LinearLayoutCompat>
+                android:onClick="GoBackOnClick"
+                android:text="@string/go_back" />
 
     <Button
         android:id="@+id/Log_in"
@@ -98,17 +129,18 @@
         android:background="@drawable/button_style"
         android:onClick="logInOnClick"
         android:text="@string/log_in" />
+        </androidx.appcompat.widget.LinearLayoutCompat>
 
-    <TextView
-        android:id="@+id/signInText"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:clickable="true"
-        android:contextClickable="false"
-        android:onClick="SignInOnClick"
-        android:text="@string/don_t_have_an_account_sign_in"
-        android:textColor="@color/colorAccent"
-        android:textSize="20sp"
-        android:textStyle="bold" />
-
+        <TextView
+            android:id="@+id/signInText"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:clickable="true"
+            android:contextClickable="false"
+            android:onClick="SignInOnClick"
+            android:text="@string/don_t_have_an_account_sign_in"
+            android:textColor="@color/colorAccent"
+            android:textSize="20sp"
+            android:textStyle="bold" />
+    </androidx.appcompat.widget.LinearLayoutCompat>
 </androidx.appcompat.widget.LinearLayoutCompat>

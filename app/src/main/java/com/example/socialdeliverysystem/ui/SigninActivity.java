@@ -1,16 +1,23 @@
 package com.example.socialdeliverysystem.ui;
 
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
+import android.widget.Toast;
 
 import com.example.socialdeliverysystem.R;
 import com.example.socialdeliverysystem.ui.LoginActivity;
 import com.firebase.ui.auth.AuthUI;
+import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.Task;
 import com.google.android.material.textfield.TextInputLayout;
 import com.google.firebase.auth.AuthCredential;
+import com.google.firebase.auth.AuthResult;
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.auth.GoogleAuthProvider;
 
 import java.util.Arrays;
@@ -25,11 +32,16 @@ public class SigninActivity extends AppCompatActivity {
     private TextInputLayout editTextIdSignin;
     private TextInputLayout editTextAddressSignin;
     private TextInputLayout editTextPasswordSignin;
+
+    private FirebaseAuth mAuth;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_signin);
         findView();
+        FirebaseUser currentUser = mAuth.getCurrentUser();
+        //updateUI(currentUser);
     }
 
     private void findView() {
@@ -40,6 +52,7 @@ public class SigninActivity extends AppCompatActivity {
         editTextIdSignin = findViewById(R.id.signin_input_id);
         editTextAddressSignin = findViewById(R.id.signin_input_address);
         editTextPasswordSignin = findViewById(R.id.signin_input_password);
+        mAuth = FirebaseAuth.getInstance();
     }
 
 
@@ -141,9 +154,23 @@ public class SigninActivity extends AppCompatActivity {
     }
 
     public void SignInOnClick(View view) {
-        //add to firebase
-        if (!validateSigninAddress() | !validateSigninEmail() | !validateSigninFirstName() | !validateSigninID() | !validateSigninLastName() | !validateSigninPassword() | !validateSigninPhone())
-            return;
+        if (validData()) {
+            mAuth.createUserWithEmailAndPassword(editTextEmailSignin.getEditText().getText().toString(), editTextPasswordSignin.getEditText().getText().toString())
+                    .addOnCompleteListener(this, new OnCompleteListener<AuthResult>() {
+                        @Override
+                        public void onComplete(@NonNull Task<AuthResult> task) {
+                            if (task.isSuccessful()) {
+                                // Sign in success, update UI with the signed-in user's information
+                                FirebaseUser user = mAuth.getCurrentUser();
+                            } else {
+                                // If sign in fails, display a message to the user.
+                                Toast.makeText(SigninActivity.this, "Mail User Already Exists",
+                                        Toast.LENGTH_LONG).show();
+                            }
+                        }
+                    });
+        }
+        return;
     }
 
     public void logInOnClick(View view) {
@@ -151,4 +178,8 @@ public class SigninActivity extends AppCompatActivity {
         startActivity(logInActivity);
     }
 
+    private boolean validData() {
+        return validateSigninAddress() & validateSigninEmail() & validateSigninFirstName() & validateSigninID() &
+                validateSigninLastName() & validateSigninPassword() & validateSigninPhone();
+    }
 }
