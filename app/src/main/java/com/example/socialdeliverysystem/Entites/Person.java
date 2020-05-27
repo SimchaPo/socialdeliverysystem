@@ -7,7 +7,7 @@ public class Person {
     private String phoneNumber;
     private String ID;
     private String address;
-    private String password;
+    //private String password;
 
     public Person(String firstName, String lastName, String email, String phoneNumber, String ID, String address, String password) {
         this.firstName = firstName;
@@ -16,7 +16,7 @@ public class Person {
         this.phoneNumber = phoneNumber;
         this.ID = ID;
         this.address = address;
-        this.password = password;
+      //  this.password = password;
     }
 
     public String getFirstName() {
@@ -67,11 +67,11 @@ public class Person {
         this.address = address;
     }
 
-    public String getPassword() {
-        return password;
-    }
-
-    public void setPassword(String password) {
-        this.password = password;
-    }
+    //public String getPassword() {
+    //    return password;
+    //}
+//
+    //public void setPassword(String password) {
+    //    this.password = password;
+    //}
 }

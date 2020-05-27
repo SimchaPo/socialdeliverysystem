@@ -8,7 +8,10 @@ import android.os.Bundle;
 import android.view.View;
 import android.widget.Toast;
 
+import com.example.socialdeliverysystem.Entites.Person;
 import com.example.socialdeliverysystem.R;
+import com.example.socialdeliverysystem.Utils.FirebaseDBManager;
+import com.example.socialdeliverysystem.Utils.Validation;
 import com.example.socialdeliverysystem.ui.LoginActivity;
 import com.firebase.ui.auth.AuthUI;
 import com.google.android.gms.tasks.OnCompleteListener;
@@ -20,6 +23,9 @@ import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.auth.GoogleAuthProvider;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.ValueEventListener;
 
 import java.util.Arrays;
 import java.util.regex.Pattern;
@@ -55,128 +61,50 @@ public class SigninActivity extends AppCompatActivity {
     }
 
 
-    private boolean validateSigninFirstName() {
-        String firstNameInput = editTextFirstNameSignin.getEditText().getText().toString().trim();
-        if (firstNameInput.isEmpty()) {
-            editTextFirstNameSignin.setError("First Name is required");
-            return false;
-        }
-        editTextFirstNameSignin.setError(null);
-        return true;
-    }
-
-    private boolean validateSigninLastName() {
-        String lastNameInput = editTextLastNameSignin.getEditText().getText().toString().trim();
-        if (lastNameInput.isEmpty()) {
-            editTextLastNameSignin.setError("Last Name is required");
-            return false;
-        }
-        editTextLastNameSignin.setError(null);
-        return true;
-    }
-
-    private boolean validateSigninPhone() {
-        String phoneInput = editTextPhoneSignin.getEditText().getText().toString().trim();
-        Pattern phonePattern = Pattern.compile("0([23489]|5[0123458]|77)([0-9]{7})");
-        if (!phoneInput.isEmpty() && phonePattern.matcher(phoneInput).matches()) {
-            editTextPhoneSignin.setError(null);
-            return true;
-        }
-        String error;
-        if (phoneInput.isEmpty())
-            error = "Phone is required";
-        else
-            error = "Invalid Phone Number!";
-        editTextPhoneSignin.setError(error);
-        return false;
-    }
-
-    private boolean validateSigninID() {
-        String idInput = editTextIdSignin.getEditText().getText().toString().trim();
-        if (idInput.length() == 9) {
-            editTextIdSignin.setError(null);
-            return true;
-        }
-        String error;
-        if (idInput.isEmpty())
-            error = "ID is required";
-        else
-            error = "Invalid ID Number!";
-        editTextIdSignin.setError(error);
-        return false;
-    }
-
-    private boolean validateSigninAddress() {
-        String addressInput = editTextAddressSignin.getEditText().getText().toString().trim();
-        if (!addressInput.isEmpty()) {
-            editTextAddressSignin.setError(null);
-            return true;
-        }
-        String error;
-        if (addressInput.isEmpty())
-            error = "Address is required";
-        else
-            error = "Invalid Address!";
-        editTextAddressSignin.setError(error);
-        return false;
-    }
-
-    private boolean validateSigninEmail() {
-        String emailInput = editTextEmailSignin.getEditText().getText().toString().trim();
-        if (!emailInput.isEmpty() && android.util.Patterns.EMAIL_ADDRESS.matcher(emailInput).matches()) {
-            editTextEmailSignin.setError(null);
-            return true;
-        }
-        String error;
-        if (emailInput.isEmpty())
-            error = "Email is required";
-        else
-            error = "Invalid Email Address!";
-        editTextEmailSignin.setError(error);
-        return false;
-    }
-
-
-    private boolean validateSigninPassword() {
-        String passwordInput = editTextPasswordSignin.getEditText().getText().toString().trim();
-        if (Pattern.compile("((?=.*[a-z])(?=.*\\d)(?=.*[A-Z])(?=.*[@#$%!^&*+=-_]).{4,20})").matcher(passwordInput).matches()) {
-            editTextPasswordSignin.setError(null);
-            return true;
-        }
-        String error;
-        if (passwordInput.isEmpty())
-            error = "Password is required";
-        else
-            error = "Password must contain mix of upper and lower case letters as well as digits and one special character(4-20)";
-        editTextPasswordSignin.setError(error);
-        return false;
-    }
-
     public void SignInOnClick(View view) {
         if (validData()) {
-            mAuth.createUserWithEmailAndPassword(editTextEmailSignin.getEditText().getText().toString(), editTextPasswordSignin.getEditText().getText().toString())
-                    .addOnCompleteListener(this, new OnCompleteListener<AuthResult>() {
+            FirebaseDBManager.usersRef.orderByKey().equalTo(editTextPhoneSignin.getEditText().getText().toString())
+                    .addValueEventListener(new ValueEventListener() {
                         @Override
-                        public void onComplete(@NonNull Task<AuthResult> task) {
-                            if (task.isSuccessful()) {
-                                mAuth.getCurrentUser().sendEmailVerification().addOnCompleteListener(new OnCompleteListener<Void>() {
-                                    @Override
-                                    public void onComplete(@NonNull Task<Void> task) {
-                                        if(task.isSuccessful()){
-                                            Toast.makeText(SigninActivity.this, "Please Check Your Email",
+                        public void onDataChange(DataSnapshot dataSnapshot) {
+                            final String[] message = {"Phone User Already Exists"};
+                            if (dataSnapshot.exists()) {
+                                Toast.makeText(SigninActivity.this, message[0],
+                                        Toast.LENGTH_LONG).show();
+                            } else {
+                                mAuth.createUserWithEmailAndPassword(editTextEmailSignin.getEditText().getText().toString(),
+                                        editTextPasswordSignin.getEditText().getText().toString()).addOnCompleteListener(new OnCompleteListener<AuthResult>() {
+                                    public void onComplete(@NonNull Task<AuthResult> task) {
+                                        if (task.isSuccessful()) {
+                                            mAuth.getCurrentUser().sendEmailVerification().addOnCompleteListener(new OnCompleteListener<Void>() {
+                                                @Override
+                                                public void onComplete(@NonNull Task<Void> task) {
+                                                    if (task.isSuccessful()) {
+                                                        addUserToDB();
+                                                        message[0] = "Please Check Your Email";
+                                                        Toast.makeText(SigninActivity.this, message[0],
+                                                                Toast.LENGTH_LONG).show();
+                                                    }
+                                                }
+                                            });
+                                            // Sign in success, update UI with the signed-in user's information
+                                        } else {
+                                            // If sign in fails, display a message to the user.
+                                            message[0] = "Mail User Already Exists For Verification";
+                                            Toast.makeText(SigninActivity.this, message[0],
                                                     Toast.LENGTH_LONG).show();
                                         }
                                     }
                                 });
-                                // Sign in success, update UI with the signed-in user's information
-                                FirebaseUser user = mAuth.getCurrentUser();
-                            } else {
-                                // If sign in fails, display a message to the user.
-                                Toast.makeText(SigninActivity.this, "Mail User Already Exists For Verification",
-                                        Toast.LENGTH_LONG).show();
                             }
                         }
+
+                        @Override
+                        public void onCancelled(@NonNull DatabaseError databaseError) {
+
+                        }
                     });
+
         }
         return;
     }
@@ -187,7 +115,44 @@ public class SigninActivity extends AppCompatActivity {
     }
 
     private boolean validData() {
-        return validateSigninAddress() & validateSigninEmail() & validateSigninFirstName() & validateSigninID() &
-                validateSigninLastName() & validateSigninPassword() & validateSigninPhone();
+        return Validation.validateAddress(editTextAddressSignin) & Validation.validateEmail(editTextEmailSignin)
+                & Validation.validateFirstName(editTextFirstNameSignin) & Validation.validateID(editTextIdSignin)
+                & Validation.validateSigninLastName(editTextLastNameSignin) & Validation.validatePassword(editTextPasswordSignin)
+                & Validation.validatePhoneNumber(editTextPhoneSignin);
+    }
+
+    private Person getPersonFromScreen() {
+        String firstName = editTextFirstNameSignin.getEditText().getText().toString();
+        String lastName = editTextLastNameSignin.getEditText().getText().toString();
+        String email = editTextEmailSignin.getEditText().getText().toString();
+        String phoneNumber = editTextPhoneSignin.getEditText().getText().toString();
+        String id = editTextIdSignin.getEditText().getText().toString();
+        String address = editTextAddressSignin.getEditText().getText().toString();
+        String password = editTextPasswordSignin.getEditText().getText().toString();
+        return new Person(firstName, lastName, email, phoneNumber, id, address, password);
+    }
+
+    private void addUserToDB() {
+        try {
+            Person user = getPersonFromScreen();
+            FirebaseDBManager.addUserToFirebase(user, new FirebaseDBManager.Action<String>() {
+                @Override
+                public void onSuccess(String obj) {
+
+                }
+
+                @Override
+                public void onFailure(Exception exception) {
+
+                }
+
+                @Override
+                public void onProgress(String status, double percent) {
+
+                }
+            });
+        } catch (Exception e) {
+            Toast.makeText(getBaseContext(), "Error ", Toast.LENGTH_LONG).show();
+        }
     }
 }

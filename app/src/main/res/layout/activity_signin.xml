@@ -51,7 +51,10 @@
 
             </com.google.android.material.textfield.TextInputLayout>
         </androidx.appcompat.widget.LinearLayoutCompat>
-
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="1dp"
+            android:background="@android:color/black" />
         <com.google.android.material.textfield.TextInputLayout
             android:id="@+id/signin_input_email"
             android:layout_width="match_parent"
@@ -66,7 +69,10 @@
                 android:inputType="textEmailAddress" />
 
         </com.google.android.material.textfield.TextInputLayout>
-
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="1dp"
+            android:background="@android:color/black" />
         <com.google.android.material.textfield.TextInputLayout
             android:id="@+id/signin_input_phone"
             android:layout_width="match_parent"
@@ -84,7 +90,10 @@
                 android:maxLength="10" />
 
         </com.google.android.material.textfield.TextInputLayout>
-
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="1dp"
+            android:background="@android:color/black" />
         <com.google.android.material.textfield.TextInputLayout
             android:id="@+id/signin_input_id"
             android:layout_width="match_parent"
@@ -102,7 +111,10 @@
                 android:maxLength="9" />
 
         </com.google.android.material.textfield.TextInputLayout>
-
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="1dp"
+            android:background="@android:color/black" />
         <com.google.android.material.textfield.TextInputLayout
             android:id="@+id/signin_input_address"
             android:layout_width="match_parent"
@@ -117,7 +129,10 @@
                 android:inputType="text" />
 
         </com.google.android.material.textfield.TextInputLayout>
-
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="1dp"
+            android:background="@android:color/black" />
         <com.google.android.material.textfield.TextInputLayout
             android:id="@+id/signin_input_password"
             android:layout_width="match_parent"
@@ -132,7 +147,10 @@
                 android:hint="@string/enter_your_password"
                 android:inputType="textPassword" />
         </com.google.android.material.textfield.TextInputLayout>
-
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="1dp"
+            android:background="@android:color/black" />
         <Button
             android:id="@+id/sign_in"
             android:layout_width="match_parent"
@@ -141,6 +159,7 @@
             android:background="@drawable/button_style"
             android:onClick="SignInOnClick"
             android:text="@string/sign_in" />
+
         <Button
             android:id="@+id/Log_in"
             android:layout_width="match_parent"
@@ -148,7 +167,7 @@
             android:layout_centerInParent="true"
             android:background="@drawable/button_style"
             android:onClick="logInOnClick"
-            android:text="@string/log_in" />
+            android:text="@string/go_back" />
 
     </androidx.appcompat.widget.LinearLayoutCompat>
 
