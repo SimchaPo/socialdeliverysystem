@@ -50,22 +50,39 @@ public class Validation {
 
     public static boolean validateID(TextInputLayout id) {
         String idInput = id.getEditText().getText().toString().trim();
-        if (idInput.length() == 9) {
-            id.setError(null);
-            return true;
-        }
-        String error;
-        if (idInput.isEmpty())
+        String error = null;
+        if (idInput.isEmpty()) {
             error = "ID is required";
-        else
+        } else if (idInput.length() != 9) {
             error = "Invalid ID Number!";
+        } else {
+            char[] idChars = idInput.toCharArray();
+            int[] idNumbs = new int[9];
+            for (int i = 0; i < 9; ++i){
+                idNumbs[i] = Character.getNumericValue(idChars[i]);
+            }
+            int sum = 0, j;
+            for (int i = 0; i <= 6; i += 2) {
+                sum += (int) idNumbs[i];
+                j = 2 * (int) idNumbs[i + 1];
+                if (j > 9) {
+                    j = 1 + j % 10;
+                }
+                sum += j;
+            }
+            if (10 - (sum % 10) != (int) idNumbs[8]) {
+                error = "Error - Invalid ID Number";
+            } else {
+                error = null;
+            }
+        }
         id.setError(error);
-        return false;
+        return error == null;
     }
 
     public static boolean validateAddress(Context context, TextInputLayout address) {
         String addressInput = address.getEditText().getText().toString().trim();
-        String errorMessage = null;
+        String errorMessage;
         if (addressInput.isEmpty())
             errorMessage = "Address is required";
         else {
