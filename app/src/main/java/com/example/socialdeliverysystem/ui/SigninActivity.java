@@ -115,7 +115,7 @@ public class SigninActivity extends AppCompatActivity {
     }
 
     private boolean validData() {
-        return Validation.validateAddress(editTextAddressSignin) & Validation.validateEmail(editTextEmailSignin)
+        return Validation.validateAddress(getApplicationContext() ,editTextAddressSignin) & Validation.validateEmail(editTextEmailSignin)
                 & Validation.validateFirstName(editTextFirstNameSignin) & Validation.validateID(editTextIdSignin)
                 & Validation.validateSigninLastName(editTextLastNameSignin) & Validation.validatePassword(editTextPasswordSignin)
                 & Validation.validatePhoneNumber(editTextPhoneSignin);

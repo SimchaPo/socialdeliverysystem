@@ -1,7 +1,12 @@
 package com.example.socialdeliverysystem.Utils;
 
+import android.content.Context;
+import android.location.Address;
+import android.widget.Toast;
+
 import com.google.android.material.textfield.TextInputLayout;
 
+import java.util.List;
 import java.util.regex.Pattern;
 
 public class Validation {
@@ -58,18 +63,26 @@ public class Validation {
         return false;
     }
 
-    public static boolean validateAddress(TextInputLayout address) {
+    public static boolean validateAddress(Context context, TextInputLayout address) {
         String addressInput = address.getEditText().getText().toString().trim();
-        if (!addressInput.isEmpty()) {
-            address.setError(null);
-            return true;
-        }
-        String error;
+        String errorMessage = null;
         if (addressInput.isEmpty())
-            error = "Address is required";
-        else
-            error = "Invalid Address!";
-        address.setError(error);
+            errorMessage = "Address is required";
+        else {
+            List<Address> addresses = LocationManage.checkLocationFromAddress(context, addressInput);
+            if (addresses.size() == 0) {
+                errorMessage = "Error - Invalid Address!";
+            } else {
+                if (addresses.get(0).getThoroughfare() == null) {
+                    errorMessage = " Error - Missing Street Name";
+                } else {
+                    address.getEditText().setText(addresses.get(0).getAddressLine(0));
+                    address.setError(null);
+                    return true;
+                }
+            }
+        }
+        address.setError(errorMessage);
         return false;
     }
 
