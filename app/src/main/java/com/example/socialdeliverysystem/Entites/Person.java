@@ -1,6 +1,8 @@
 package com.example.socialdeliverysystem.Entites;
 
-public class Person {
+import java.io.Serializable;
+
+public class Person implements Serializable {
     private String firstName;
     private String lastName;
     private String email;
@@ -9,14 +11,17 @@ public class Person {
     private String address;
     //private String password;
 
-    public Person(String firstName, String lastName, String email, String phoneNumber, String ID, String address, String password) {
+    public Person() {
+    }
+
+    public Person(String firstName, String lastName, String email, String phoneNumber, String ID, String address) {
         this.firstName = firstName;
         this.lastName = lastName;
         this.email = email;
         this.phoneNumber = phoneNumber;
         this.ID = ID;
         this.address = address;
-      //  this.password = password;
+        //  this.password = password;
     }
 
     public String getFirstName() {
@@ -67,11 +72,10 @@ public class Person {
         this.address = address;
     }
 
-    //public String getPassword() {
-    //    return password;
-    //}
-//
-    //public void setPassword(String password) {
-    //    this.password = password;
-    //}
+    @Override
+    public String toString() {
+
+        return "User Details:\n" + this.getFirstName() + " " + this.getLastName() + "\n" + this.getID() + "\n"
+                + this.getEmail() + "\n" + this.getPhoneNumber() + "\n" + this.getAddress();
+    }
 }

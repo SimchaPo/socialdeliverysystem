@@ -1,16 +1,26 @@
 package com.example.socialdeliverysystem.ui;
 
+import android.content.Intent;
 import android.os.Bundle;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.Menu;
+import android.widget.TextView;
 
+import com.example.socialdeliverysystem.Entites.Person;
 import com.example.socialdeliverysystem.R;
+import com.example.socialdeliverysystem.ui.gallery.FriendsParcelsFragment;
+import com.example.socialdeliverysystem.ui.slideshow.SlideshowFragment;
+import com.example.socialdeliverysystem.ui.userParcels.RegisteredParcelsFragment;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.android.material.snackbar.Snackbar;
 import com.google.android.material.navigation.NavigationView;
-import com.google.firebase.database.DatabaseReference;
-import com.google.firebase.database.FirebaseDatabase;
 
+import androidx.fragment.app.Fragment;
+import androidx.fragment.app.FragmentTransaction;
+import androidx.lifecycle.Observer;
+import androidx.lifecycle.ViewModelProvider;
+import androidx.lifecycle.ViewModelProviders;
 import androidx.navigation.NavController;
 import androidx.navigation.Navigation;
 import androidx.navigation.ui.AppBarConfiguration;
@@ -21,12 +31,19 @@ import androidx.appcompat.widget.Toolbar;
 
 public class MainActivity extends AppCompatActivity {
 
+    private SharedViewModel sharedViewModel;
     private AppBarConfiguration mAppBarConfiguration;
+    private Person user;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+        Intent i = getIntent();
+        sharedViewModel = new SharedViewModel();
+        sharedViewModel = ViewModelProviders.of(this).get(sharedViewModel.getClass());
+        sharedViewModel.setUser((Person) i.getSerializableExtra("user"));
+        user = (Person) i.getSerializableExtra("user");
         Toolbar toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
         FloatingActionButton fab = findViewById(R.id.fab);
@@ -48,6 +65,11 @@ public class MainActivity extends AppCompatActivity {
         NavController navController = Navigation.findNavController(this, R.id.nav_host_fragment);
         NavigationUI.setupActionBarWithNavController(this, navController, mAppBarConfiguration);
         NavigationUI.setupWithNavController(navigationView, navController);
+        View hView = navigationView.getHeaderView(0);
+        TextView userNameTextView = (TextView) hView.findViewById(R.id.userName);
+        TextView userEmailTextView = (TextView) hView.findViewById(R.id.userEmale);
+        userNameTextView.setText(user.getFirstName() + " " + user.getLastName());
+        userEmailTextView.setText(user.getEmail());
     }
 
     @Override
@@ -58,9 +80,37 @@ public class MainActivity extends AppCompatActivity {
     }
 
     @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        Fragment fragment;
+        switch (item.getItemId()) {
+            case R.id.nav_home:
+                fragment = new RegisteredParcelsFragment();
+                loadFragment(fragment);
+                return true;
+            case R.id.nav_gallery:
+                fragment = new FriendsParcelsFragment();
+                loadFragment(fragment);
+                return true;
+            case R.id.nav_slideshow:
+                fragment = new SlideshowFragment();
+                loadFragment(fragment);
+                return true;
+        }
+        return false;
+    }
+
+    @Override
     public boolean onSupportNavigateUp() {
         NavController navController = Navigation.findNavController(this, R.id.nav_host_fragment);
         return NavigationUI.navigateUp(navController, mAppBarConfiguration)
                 || super.onSupportNavigateUp();
+    }
+
+    private void loadFragment(Fragment fragment) {
+        // load fragment
+        FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
+        transaction.replace(R.id.nav_host_fragment_container, fragment);
+        transaction.addToBackStack(null);
+        transaction.commit();
     }
 }

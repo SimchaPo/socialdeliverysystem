@@ -15,37 +15,40 @@ public class Validation {
 
     public static boolean validateFirstName(TextInputLayout firstName) {
         String firstNameInput = firstName.getEditText().getText().toString().trim();
+        String error;
         if (firstNameInput.isEmpty()) {
-            firstName.setError("First Name is required");
-            return false;
+            error = "First Name is required";
+        } else {
+            error = null;
         }
-        firstName.setError(null);
-        return true;
+        firstName.setError(error);
+        return error == null;
     }
 
-    public static boolean validateSigninLastName(TextInputLayout lastName) {
+    public static boolean validateLastName(TextInputLayout lastName) {
         String lastNameInput = lastName.getEditText().getText().toString().trim();
+        String error;
         if (lastNameInput.isEmpty()) {
-            lastName.setError("Last Name is required");
-            return false;
+            error = "Last Name is required";
+        } else {
+            error = null;
         }
-        lastName.setError(null);
-        return true;
+        lastName.setError(error);
+        return error == null;
     }
 
     public static boolean validatePhoneNumber(TextInputLayout phoneNumber) {
         String phoneInput = phoneNumber.getEditText().getText().toString().trim();
-        if (!phoneInput.isEmpty() && phonePattern.matcher(phoneInput).matches()) {
-            phoneNumber.setError(null);
-            return true;
-        }
         String error;
-        if (phoneInput.isEmpty())
+        if (!phoneInput.isEmpty() && phonePattern.matcher(phoneInput).matches()) {
+            error = null;
+        } else if (phoneInput.isEmpty()) {
             error = "Phone is required";
-        else
+        } else {
             error = "Invalid Phone Number!";
+        }
         phoneNumber.setError(error);
-        return false;
+        return error == null;
     }
 
     public static boolean validateID(TextInputLayout id) {
@@ -54,24 +57,24 @@ public class Validation {
         if (idInput.isEmpty()) {
             error = "ID is required";
         } else if (idInput.length() != 9) {
-            error = "Invalid ID Number!";
+            error = "ID Number Must Contain 9 Characters";
         } else {
             char[] idChars = idInput.toCharArray();
             int[] idNumbs = new int[9];
-            for (int i = 0; i < 9; ++i){
+            for (int i = 0; i < 9; ++i) {
                 idNumbs[i] = Character.getNumericValue(idChars[i]);
             }
             int sum = 0, j;
             for (int i = 0; i <= 6; i += 2) {
-                sum += (int) idNumbs[i];
-                j = 2 * (int) idNumbs[i + 1];
+                sum += idNumbs[i];
+                j = 2 * idNumbs[i + 1];
                 if (j > 9) {
                     j = 1 + j % 10;
                 }
                 sum += j;
             }
             if (10 - (sum % 10) != (int) idNumbs[8]) {
-                error = "Error - Invalid ID Number";
+                error = "Invalid ID Number";
             } else {
                 error = null;
             }
@@ -88,50 +91,47 @@ public class Validation {
         else {
             List<Address> addresses = LocationManage.checkLocationFromAddress(context, addressInput);
             if (addresses.size() == 0) {
-                errorMessage = "Error - Invalid Address!";
+                errorMessage = "Invalid Address!";
             } else {
                 if (addresses.get(0).getThoroughfare() == null) {
-                    errorMessage = " Error - Missing Street Name";
+                    errorMessage = "Missing Street Name";
                 } else {
                     address.getEditText().setText(addresses.get(0).getAddressLine(0));
-                    address.setError(null);
-                    return true;
+                    errorMessage = null;
                 }
             }
         }
         address.setError(errorMessage);
-        return false;
+        return errorMessage == null;
     }
 
     public static boolean validateEmail(TextInputLayout email) {
         String emailInput = email.getEditText().getText().toString().trim();
-        if (!emailInput.isEmpty() && android.util.Patterns.EMAIL_ADDRESS.matcher(emailInput).matches()) {
-            email.setError(null);
-            return true;
-        }
         String error;
-        if (emailInput.isEmpty())
+        if (!emailInput.isEmpty() && android.util.Patterns.EMAIL_ADDRESS.matcher(emailInput).matches()) {
+            error = null;
+        } else if (emailInput.isEmpty()) {
             error = "Email is required";
-        else
+        } else {
             error = "Invalid Email Address!";
+        }
         email.setError(error);
-        return false;
+        return error == null;
     }
 
 
     public static boolean validatePassword(TextInputLayout password) {
         String passwordInput = password.getEditText().getText().toString().trim();
-        if (passwordPattern.matcher(passwordInput).matches()) {
-            password.setError(null);
-            return true;
-        }
         String error;
-        if (passwordInput.isEmpty())
+        if (passwordPattern.matcher(passwordInput).matches()) {
+            error = null;
+        } else if (passwordInput.isEmpty()) {
             error = "Password is required";
-        else
+        } else {
             error = "Password must contain mix of upper and lower case letters as well as digits and one special character(4-20)";
+        }
         password.setError(error);
-        return false;
+        return error == null;
     }
 
 }

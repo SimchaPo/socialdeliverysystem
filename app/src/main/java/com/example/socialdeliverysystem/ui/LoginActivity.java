@@ -1,9 +1,12 @@
 package com.example.socialdeliverysystem.ui;
 
 import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.LinearLayoutCompat;
 
+import android.app.Activity;
+import android.content.ActivityNotFoundException;
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
@@ -25,6 +28,7 @@ import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.auth.PhoneAuthCredential;
 import com.google.firebase.auth.PhoneAuthProvider;
 import com.google.firebase.auth.SignInMethodQueryResult;
+import com.google.firebase.database.ChildEventListener;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
@@ -50,6 +54,8 @@ public class LoginActivity extends AppCompatActivity {
     private FirebaseAuth mAuth;
     private String phoneOrMailText;
     private Button logInBtn;
+    private DatabaseReference mReference;
+    private Person user;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -68,6 +74,7 @@ public class LoginActivity extends AppCompatActivity {
         editCode = findViewById(R.id.login_input_sms);
         mAuth = FirebaseAuth.getInstance();
         logInBtn = findViewById(R.id.log_in_btn);
+        mReference = FirebaseDatabase.getInstance().getReference().child("users");
     }
 
     public void SignInOnClick(View view) {
@@ -119,7 +126,40 @@ public class LoginActivity extends AppCompatActivity {
                     @Override
                     public void onComplete(@NonNull Task<AuthResult> task) {
                         if (task.isSuccessful()) {
-                            //Go to Activity
+                            mReference.addChildEventListener(new ChildEventListener() {
+                                @Override
+                                public void onChildAdded(@NonNull DataSnapshot dataSnapshot, @Nullable String s) {
+                                    String userPhone = dataSnapshot.getKey();
+
+                                    if (userPhone.equals(phoneOrMailText)) {
+                                        user = dataSnapshot.getValue(Person.class);
+                                        Intent mainActivity = new Intent(getApplicationContext(), MainActivity.class);
+                                        mainActivity.putExtra("user", user);
+                                        startActivity(mainActivity);
+                                    }
+
+                                }
+
+                                @Override
+                                public void onChildChanged(@NonNull DataSnapshot dataSnapshot, @Nullable String s) {
+
+                                }
+
+                                @Override
+                                public void onChildRemoved(@NonNull DataSnapshot dataSnapshot) {
+
+                                }
+
+                                @Override
+                                public void onChildMoved(@NonNull DataSnapshot dataSnapshot, @Nullable String s) {
+
+                                }
+
+                                @Override
+                                public void onCancelled(@NonNull DatabaseError databaseError) {
+
+                                }
+                            });
                         } else {
                             String message = "Somthing is wrong, we will fix it soon...";
 
@@ -173,6 +213,7 @@ public class LoginActivity extends AppCompatActivity {
                         editTextPhoneOrMailLogIn.setError("No Such User, Please Sign In");
                     }
                 }
+
                 @Override
                 public void onCancelled(@NonNull DatabaseError databaseError) {
 
@@ -219,10 +260,44 @@ public class LoginActivity extends AppCompatActivity {
                             if (task.isSuccessful()) {
                                 editPassword.setError(null);
                                 if (mAuth.getCurrentUser().isEmailVerified()) {
-                                    //startActivity
+                                    mReference.addChildEventListener(new ChildEventListener() {
+                                        @Override
+                                        public void onChildAdded(@NonNull DataSnapshot dataSnapshot, @Nullable String s) {
+                                            String userEmail = dataSnapshot.child("email").getValue().toString();
+
+                                            if (userEmail.equals(phoneOrMailText)) {
+                                                user = dataSnapshot.getValue(Person.class);
+                                                Intent mainActivity = new Intent(getApplicationContext(), MainActivity.class);
+                                                mainActivity.putExtra("user", user);
+                                                startActivity(mainActivity);
+                                            }
+
+                                        }
+
+                                        @Override
+                                        public void onChildChanged(@NonNull DataSnapshot dataSnapshot, @Nullable String s) {
+
+                                        }
+
+                                        @Override
+                                        public void onChildRemoved(@NonNull DataSnapshot dataSnapshot) {
+
+                                        }
+
+                                        @Override
+                                        public void onChildMoved(@NonNull DataSnapshot dataSnapshot, @Nullable String s) {
+
+                                        }
+
+                                        @Override
+                                        public void onCancelled(@NonNull DatabaseError databaseError) {
+
+                                        }
+                                    });
                                 } else {
                                     Toast.makeText(LoginActivity.this, "Please Verify Your Email Address",
                                             Toast.LENGTH_LONG).show();
+                                    logInBtn.setEnabled(true);
                                 }
                             } else {
                                 Toast.makeText(LoginActivity.this, "Authentication failed.",

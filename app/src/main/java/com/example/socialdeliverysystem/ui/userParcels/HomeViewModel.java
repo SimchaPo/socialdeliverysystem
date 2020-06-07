@@ -1,4 +1,4 @@
-package com.example.socialdeliverysystem.ui.home;
+package com.example.socialdeliverysystem.ui.userParcels;
 
 import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;

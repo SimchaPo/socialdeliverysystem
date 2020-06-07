@@ -12,23 +12,14 @@ import com.example.socialdeliverysystem.Entites.Person;
 import com.example.socialdeliverysystem.R;
 import com.example.socialdeliverysystem.Utils.FirebaseDBManager;
 import com.example.socialdeliverysystem.Utils.Validation;
-import com.example.socialdeliverysystem.ui.LoginActivity;
-import com.firebase.ui.auth.AuthUI;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.android.material.textfield.TextInputLayout;
-import com.google.firebase.auth.ActionCodeSettings;
-import com.google.firebase.auth.AuthCredential;
 import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
-import com.google.firebase.auth.FirebaseUser;
-import com.google.firebase.auth.GoogleAuthProvider;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.ValueEventListener;
-
-import java.util.Arrays;
-import java.util.regex.Pattern;
 
 public class SigninActivity extends AppCompatActivity {
 
@@ -117,7 +108,7 @@ public class SigninActivity extends AppCompatActivity {
     private boolean validData() {
         return Validation.validateAddress(getApplicationContext() ,editTextAddressSignin) & Validation.validateEmail(editTextEmailSignin)
                 & Validation.validateFirstName(editTextFirstNameSignin) & Validation.validateID(editTextIdSignin)
-                & Validation.validateSigninLastName(editTextLastNameSignin) & Validation.validatePassword(editTextPasswordSignin)
+                & Validation.validateLastName(editTextLastNameSignin) & Validation.validatePassword(editTextPasswordSignin)
                 & Validation.validatePhoneNumber(editTextPhoneSignin);
     }
 
@@ -129,7 +120,7 @@ public class SigninActivity extends AppCompatActivity {
         String id = editTextIdSignin.getEditText().getText().toString();
         String address = editTextAddressSignin.getEditText().getText().toString();
         String password = editTextPasswordSignin.getEditText().getText().toString();
-        return new Person(firstName, lastName, email, phoneNumber, id, address, password);
+        return new Person(firstName, lastName, email, phoneNumber, id, address);
     }
 
     private void addUserToDB() {
