@@ -1,7 +1,5 @@
-package com.example.socialdeliverysystem.ui.userParcels;
+package com.example.socialdeliverysystem.ui.friendsParcels;
 
-import android.annotation.SuppressLint;
-import android.content.Context;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -26,30 +24,34 @@ import com.google.firebase.database.FirebaseDatabase;
 
 import java.util.ArrayList;
 
-public class RegisteredParcelsFragment extends Fragment {
+public class FriendsParcelsFragment extends Fragment {
 
     private Person user;
+    private TextView textView;
     private ArrayList<String> parcelArrayList = new ArrayList<>();
     private ArrayAdapter<String> parcelArrayAdapter;
     private DatabaseReference mReference;
     private ListView parcelListView;
 
-    @SuppressLint("SetTextI18n")
     public View onCreateView(@NonNull LayoutInflater inflater,
                              ViewGroup container, Bundle savedInstanceState) {
-        View root = inflater.inflate(R.layout.fragment_home, container, false);
-        TextView textView = root.findViewById(R.id.text_home);
+        View root = inflater.inflate(R.layout.fragment_friends_parcels, container, false);
         user = ((MainActivity) getActivity()).getUser();
-        textView.setText(user.toString());
-        mReference = FirebaseDatabase.getInstance().getReference().child("packages").child("newPackages").child(user.getPhoneNumber());
+        textView = root.findViewById(R.id.text_gallery);
+        textView.setText(((MainActivity) getActivity()).getUser().getFirstName());
+        mReference = FirebaseDatabase.getInstance().getReference().child("packages").child("newPackages");
         parcelArrayAdapter = new ArrayAdapter<String>(getContext(), android.R.layout.simple_list_item_1, parcelArrayList);
         parcelListView = (ListView) root.findViewById(R.id.parcelListView);
         parcelListView.setAdapter(parcelArrayAdapter);
         mReference.addChildEventListener(new ChildEventListener() {
             @Override
             public void onChildAdded(@NonNull DataSnapshot dataSnapshot, @Nullable String s) {
-                  parcelArrayList.add(dataSnapshot.getKey() + "\n" + dataSnapshot.getValue(Parcel.class).toString());
-                  parcelArrayAdapter.notifyDataSetChanged();
+                if(!dataSnapshot.getKey().equals(user.getPhoneNumber())) {
+                    for (DataSnapshot ds : dataSnapshot.getChildren()){
+                        parcelArrayList.add(ds.getKey() +  "\n" + ds.getValue(Parcel.class).toString());
+                        parcelArrayAdapter.notifyDataSetChanged();
+                    }
+                }
             }
 
             @Override

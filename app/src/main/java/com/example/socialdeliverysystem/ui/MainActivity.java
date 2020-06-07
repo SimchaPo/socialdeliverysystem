@@ -9,8 +9,8 @@ import android.widget.TextView;
 
 import com.example.socialdeliverysystem.Entites.Person;
 import com.example.socialdeliverysystem.R;
-import com.example.socialdeliverysystem.ui.gallery.FriendsParcelsFragment;
-import com.example.socialdeliverysystem.ui.slideshow.SlideshowFragment;
+import com.example.socialdeliverysystem.ui.friendsParcels.FriendsParcelsFragment;
+import com.example.socialdeliverysystem.ui.parcelsHistory.ParcelsHistoryFragment;
 import com.example.socialdeliverysystem.ui.userParcels.RegisteredParcelsFragment;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.android.material.snackbar.Snackbar;
@@ -18,9 +18,6 @@ import com.google.android.material.navigation.NavigationView;
 
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentTransaction;
-import androidx.lifecycle.Observer;
-import androidx.lifecycle.ViewModelProvider;
-import androidx.lifecycle.ViewModelProviders;
 import androidx.navigation.NavController;
 import androidx.navigation.Navigation;
 import androidx.navigation.ui.AppBarConfiguration;
@@ -31,19 +28,15 @@ import androidx.appcompat.widget.Toolbar;
 
 public class MainActivity extends AppCompatActivity {
 
-    private SharedViewModel sharedViewModel;
     private AppBarConfiguration mAppBarConfiguration;
     private Person user;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_main);
         Intent i = getIntent();
-        sharedViewModel = new SharedViewModel();
-        sharedViewModel = ViewModelProviders.of(this).get(sharedViewModel.getClass());
-        sharedViewModel.setUser((Person) i.getSerializableExtra("user"));
         user = (Person) i.getSerializableExtra("user");
+        setContentView(R.layout.activity_main);
         Toolbar toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
         FloatingActionButton fab = findViewById(R.id.fab);
@@ -59,7 +52,7 @@ public class MainActivity extends AppCompatActivity {
         // Passing each menu ID as a set of Ids because each
         // menu should be considered as top level destinations.
         mAppBarConfiguration = new AppBarConfiguration.Builder(
-                R.id.nav_home, R.id.nav_gallery, R.id.nav_slideshow)
+                R.id.nav_registered_parcels, R.id.nav_friends_parcels, R.id.nav_parcels_history)
                 .setDrawerLayout(drawer)
                 .build();
         NavController navController = Navigation.findNavController(this, R.id.nav_host_fragment);
@@ -83,16 +76,16 @@ public class MainActivity extends AppCompatActivity {
     public boolean onOptionsItemSelected(MenuItem item) {
         Fragment fragment;
         switch (item.getItemId()) {
-            case R.id.nav_home:
+            case R.id.nav_registered_parcels:
                 fragment = new RegisteredParcelsFragment();
                 loadFragment(fragment);
                 return true;
-            case R.id.nav_gallery:
+            case R.id.nav_friends_parcels:
                 fragment = new FriendsParcelsFragment();
                 loadFragment(fragment);
                 return true;
-            case R.id.nav_slideshow:
-                fragment = new SlideshowFragment();
+            case R.id.nav_parcels_history:
+                fragment = new ParcelsHistoryFragment();
                 loadFragment(fragment);
                 return true;
         }
@@ -112,5 +105,9 @@ public class MainActivity extends AppCompatActivity {
         transaction.replace(R.id.nav_host_fragment_container, fragment);
         transaction.addToBackStack(null);
         transaction.commit();
+    }
+
+    public Person getUser() {
+        return user;
     }
 }

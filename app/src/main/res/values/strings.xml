@@ -26,4 +26,7 @@
     <string name="enter_code_from_sms">Enter Code From Sms</string>
     <string name="switch_to_password_entry">Switch To Password Entry</string>
     <string name="go_back">Go Back</string>
+    <string name="registered_parcels">Registered Parcels</string>
+    <string name="friends_parcels">Friends Parcels</string>
+    <string name="history_parcels">History Parcels</string>
 </resources>

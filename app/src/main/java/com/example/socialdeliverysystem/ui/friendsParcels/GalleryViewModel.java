@@ -1,4 +1,4 @@
-package com.example.socialdeliverysystem.ui.gallery;
+package com.example.socialdeliverysystem.ui.friendsParcels;
 
 import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;

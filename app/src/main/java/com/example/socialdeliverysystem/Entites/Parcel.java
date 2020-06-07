@@ -1,20 +1,16 @@
 package com.example.socialdeliverysystem.Entites;
 
-enum PACKAGE_SIZE{HALF,ONE,FIVE,TWENTY};
-enum PACKAGE_TYPE{ENVELOPE, SMALL_PACKAGE, BIG_PACKAGE};
-
 public class Parcel {
     private  String addresseeKey;
     private  String storage;
-    private  PACKAGE_SIZE package_size;
-    private  PACKAGE_TYPE package_type;
+    private  String package_size;
+    private  String package_type;
     private  boolean fragile;
 
     public Parcel(){
-        //addressee = new Person();
     }
 
-    public Parcel(String addresseeKey, PACKAGE_SIZE package_size, PACKAGE_TYPE package_type, boolean fragile) {
+    public Parcel(String addresseeKey, String package_size, String package_type, boolean fragile) {
         this.addresseeKey = addresseeKey;
         this.package_size = package_size;
         this.package_type = package_type;
@@ -37,19 +33,19 @@ public class Parcel {
         this.storage = storage;
     }
 
-    public PACKAGE_SIZE getPackage_size() {
+    public String getPackage_size() {
         return package_size;
     }
 
-    public void setPackage_size(PACKAGE_SIZE package_size) {
+    public void setPackage_size(String package_size) {
         this.package_size = package_size;
     }
 
-    public PACKAGE_TYPE getPackage_type() {
+    public String getPackage_type() {
         return package_type;
     }
 
-    public void setPackage_type(PACKAGE_TYPE package_type) {
+    public void setPackage_type(String package_type) {
         this.package_type = package_type;
     }
 

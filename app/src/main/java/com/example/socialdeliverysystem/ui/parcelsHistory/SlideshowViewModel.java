@@ -1,4 +1,4 @@
-package com.example.socialdeliverysystem.ui.slideshow;
+package com.example.socialdeliverysystem.ui.parcelsHistory;
 
 import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;

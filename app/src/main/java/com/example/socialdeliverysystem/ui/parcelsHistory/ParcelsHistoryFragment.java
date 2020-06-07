@@ -1,4 +1,4 @@
-package com.example.socialdeliverysystem.ui.slideshow;
+package com.example.socialdeliverysystem.ui.parcelsHistory;
 
 import android.os.Bundle;
 import android.view.LayoutInflater;
@@ -14,7 +14,7 @@ import androidx.lifecycle.ViewModelProviders;
 
 import com.example.socialdeliverysystem.R;
 
-public class SlideshowFragment extends Fragment {
+public class ParcelsHistoryFragment extends Fragment {
 
     private SlideshowViewModel slideshowViewModel;
 
@@ -22,7 +22,7 @@ public class SlideshowFragment extends Fragment {
                              ViewGroup container, Bundle savedInstanceState) {
         slideshowViewModel =
                 ViewModelProviders.of(this).get(SlideshowViewModel.class);
-        View root = inflater.inflate(R.layout.fragment_slideshow, container, false);
+        View root = inflater.inflate(R.layout.fragment_parcels_history, container, false);
         final TextView textView = root.findViewById(R.id.text_slideshow);
         slideshowViewModel.getText().observe(getViewLifecycleOwner(), new Observer<String>() {
             @Override
