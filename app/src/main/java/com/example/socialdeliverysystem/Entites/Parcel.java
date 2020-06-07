@@ -5,12 +5,12 @@ public class Parcel {
     private  String storage;
     private  String package_size;
     private  String package_type;
-    private  boolean fragile;
+    private  String fragile;
 
     public Parcel(){
     }
 
-    public Parcel(String addresseeKey, String package_size, String package_type, boolean fragile) {
+    public Parcel(String addresseeKey, String package_size, String package_type, String fragile) {
         this.addresseeKey = addresseeKey;
         this.package_size = package_size;
         this.package_type = package_type;
@@ -49,11 +49,11 @@ public class Parcel {
         this.package_type = package_type;
     }
 
-    public boolean isFragile() {
+    public String isFragile() {
         return fragile;
     }
 
-    public void setFragile(boolean fragile) {
+    public void setFragile(String fragile) {
         this.fragile = fragile;
     }
 
