@@ -158,4 +158,24 @@ public class LocationManage {
         }
         return addresses;
     }
+
+    static public float getDistanceBetweenTwoLocations(Context context, String locA, String locB) {
+        Location locationA = setLatLon(context, locA, "pointA");
+        Location locationB = setLatLon(context, locB, "pointB");
+        return locationA.distanceTo(locationB)/1000;
+    }
+
+    static private Location setLatLon(Context context, String loc, String pnt) {
+        Geocoder geocoder = new Geocoder(context);
+        Location location = new Location(pnt);
+        List<Address> addresses = null;
+        try {
+            addresses = geocoder.getFromLocationName(loc, 1);
+            location.setLatitude(addresses.get(0).getLatitude());
+            location.setLongitude(addresses.get(0).getLongitude());
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        return location;
+    }
 }

@@ -15,6 +15,7 @@ import androidx.fragment.app.Fragment;
 import com.example.socialdeliverysystem.Entites.Parcel;
 import com.example.socialdeliverysystem.Entites.Person;
 import com.example.socialdeliverysystem.R;
+import com.example.socialdeliverysystem.Utils.LocationManage;
 import com.example.socialdeliverysystem.ui.MainActivity;
 import com.google.firebase.database.ChildEventListener;
 import com.google.firebase.database.DataSnapshot;
@@ -23,6 +24,8 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
 
 public class FriendsParcelsFragment extends Fragment {
 
@@ -45,12 +48,48 @@ public class FriendsParcelsFragment extends Fragment {
         parcelListView.setAdapter(parcelArrayAdapter);
         mReference.addChildEventListener(new ChildEventListener() {
             @Override
-            public void onChildAdded(@NonNull DataSnapshot dataSnapshot, @Nullable String s) {
-                if(!dataSnapshot.getKey().equals(user.getPhoneNumber())) {
-                    for (DataSnapshot ds : dataSnapshot.getChildren()){
-                        parcelArrayList.add(ds.getKey() +  "\n" + ds.getValue(Parcel.class).toString());
-                        parcelArrayAdapter.notifyDataSetChanged();
-                    }
+            public void onChildAdded(@NonNull final DataSnapshot ds1, @Nullable String s) {
+                if (!ds1.getKey().equals(user.getPhoneNumber())) {
+                    FirebaseDatabase.getInstance().getReference().child("users").child(ds1.getKey()).addChildEventListener(new ChildEventListener() {
+                        @Override
+                        public void onChildAdded(@NonNull DataSnapshot ds2, @Nullable String s) {
+                            if (ds2.getKey().equals("address")) {
+                                String address = ds2.getValue().toString();
+                                float distance = LocationManage.getDistanceBetweenTwoLocations(getContext(), user.getAddress(), address);
+                                for (DataSnapshot ds : ds1.getChildren()) {
+                                    parcelArrayList.add(distance + " km\n" + ds.getKey() + "\n" + ds.getValue(Parcel.class).toString() + "\n");
+                                    Collections.sort(parcelArrayList, new Comparator<String>() {
+                                        public int compare(String a, String b) {
+                                            Float n1 = Float.parseFloat(a.split(" ")[0]);
+                                            Float n2 = Float.parseFloat(b.split(" ")[0]);
+                                            return Float.compare(n1, n2);
+                                        }
+                                    });
+                                    parcelArrayAdapter.notifyDataSetChanged();
+                                }
+                            }
+                        }
+
+                        @Override
+                        public void onChildChanged(@NonNull DataSnapshot dataSnapshot, @Nullable String s) {
+
+                        }
+
+                        @Override
+                        public void onChildRemoved(@NonNull DataSnapshot dataSnapshot) {
+
+                        }
+
+                        @Override
+                        public void onChildMoved(@NonNull DataSnapshot dataSnapshot, @Nullable String s) {
+
+                        }
+
+                        @Override
+                        public void onCancelled(@NonNull DatabaseError databaseError) {
+
+                        }
+                    });
                 }
             }
 
@@ -76,4 +115,6 @@ public class FriendsParcelsFragment extends Fragment {
         });
         return root;
     }
+
+
 }
