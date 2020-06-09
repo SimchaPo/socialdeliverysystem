@@ -9,7 +9,7 @@
         android:id="@+id/nav_registered_parcels"
         android:name="com.example.socialdeliverysystem.ui.userParcels.RegisteredParcelsFragment"
         android:label="@string/registered_parcels"
-        tools:layout="@layout/fragment_home"/>
+        tools:layout="@layout/fragment_home_user_parcels"/>
 
     <fragment
         android:id="@+id/nav_friends_parcels"

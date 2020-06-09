@@ -95,7 +95,6 @@ public class SigninActivity extends AppCompatActivity {
 
                         }
                     });
-
         }
         return;
     }

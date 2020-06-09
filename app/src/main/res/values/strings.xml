@@ -29,4 +29,5 @@
     <string name="registered_parcels">Registered Parcels</string>
     <string name="friends_parcels">Friends Parcels</string>
     <string name="history_parcels">History Parcels</string>
+    <string name="log_out">Log Out</string>
 </resources>

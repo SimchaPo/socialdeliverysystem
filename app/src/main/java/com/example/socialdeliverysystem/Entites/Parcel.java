@@ -3,8 +3,8 @@ package com.example.socialdeliverysystem.Entites;
 public class Parcel {
     private  String addresseeKey;
     private  String storage;
-    private  String package_size;
-    private  String package_type;
+    private  String packageSize;
+    private  String packageType;
     private  String fragile;
 
     public Parcel(){
@@ -12,8 +12,8 @@ public class Parcel {
 
     public Parcel(String addresseeKey, String package_size, String package_type, String fragile) {
         this.addresseeKey = addresseeKey;
-        this.package_size = package_size;
-        this.package_type = package_type;
+        this.packageSize = package_size;
+        this.packageType = package_type;
         this.fragile = fragile;
     }
 
@@ -33,20 +33,20 @@ public class Parcel {
         this.storage = storage;
     }
 
-    public String getPackage_size() {
-        return package_size;
+    public String getPackageSize() {
+        return packageSize;
     }
 
-    public void setPackage_size(String package_size) {
-        this.package_size = package_size;
+    public void setPackageSize(String packageSize) {
+        this.packageSize = packageSize;
     }
 
-    public String getPackage_type() {
-        return package_type;
+    public String getPackageType() {
+        return packageType;
     }
 
-    public void setPackage_type(String package_type) {
-        this.package_type = package_type;
+    public void setPackageType(String packageType) {
+        this.packageType = packageType;
     }
 
     public String isFragile() {
@@ -59,6 +59,6 @@ public class Parcel {
 
     @Override
     public String toString(){
-        return addresseeKey + "\n" + storage + "\n" + package_size + "\n" + package_type + "\n"+ fragile;
+        return addresseeKey + "\n" + storage + "\n" + packageSize + "\n" + packageType + "\n"+ fragile;
     }
 }

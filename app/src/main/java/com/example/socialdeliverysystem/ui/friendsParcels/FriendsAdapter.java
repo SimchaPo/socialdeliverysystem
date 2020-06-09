@@ -6,6 +6,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
+import android.widget.Button;
 import android.widget.CompoundButton;
 import android.widget.Switch;
 import android.widget.TextView;
@@ -19,17 +20,19 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 
+import java.text.SimpleDateFormat;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.Date;
 
 
 public class FriendsAdapter extends BaseAdapter {
-    private Activity context;
     ArrayList<FriendsParcel> parcels;
     private static LayoutInflater inflater = null;
     private DatabaseReference mReference;
 
     public FriendsAdapter(Activity context, ArrayList<FriendsParcel> parcels) {
-        this.context = context;
         this.parcels = parcels;
         inflater = (LayoutInflater) context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
     }
@@ -58,6 +61,7 @@ public class FriendsAdapter extends BaseAdapter {
         TextView storageLocationTV = (TextView) itemView.findViewById(R.id.storage_location);
         TextView addresseeAddressTV = (TextView) itemView.findViewById(R.id.addressee_address);
         TextView dist = (TextView) itemView.findViewById(R.id.distance);
+        final Button takeBtn = (Button) itemView.findViewById(R.id.take_pkg_btn);
         final Switch canTakeSwitch = (Switch) itemView.findViewById(R.id.can_take_switch);
         final FriendsParcel parcel = parcels.get(i);
         mReference = FirebaseDatabase.getInstance().getReference("packages/newPackages" + '/' + parcel.getAddressee().getPhoneNumber() + '/' +
@@ -66,7 +70,14 @@ public class FriendsAdapter extends BaseAdapter {
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
                 if (dataSnapshot.getValue() != null) {
-                    canTakeSwitch.setChecked(true);
+                    if (dataSnapshot.getValue().equals("applied")) {
+                        canTakeSwitch.setVisibility(View.VISIBLE);
+                        takeBtn.setVisibility(View.GONE);
+                        canTakeSwitch.setChecked(true);
+                    } else if (dataSnapshot.getValue().equals("accepted")) {
+                        takeBtn.setVisibility(View.VISIBLE);
+                        canTakeSwitch.setVisibility(View.GONE);
+                    }
                 }
             }
 
@@ -78,7 +89,6 @@ public class FriendsAdapter extends BaseAdapter {
         canTakeSwitch.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
             @Override
             public void onCheckedChanged(CompoundButton compoundButton, boolean b) {
-                parcels.get(i);
                 mReference = FirebaseDatabase.getInstance().getReference("packages/newPackages" + '/' + parcel.getAddressee().getPhoneNumber() + '/' +
                         parcel.getParcelID() + "/delivers" + '/' + parcel.getUser().getPhoneNumber());
                 if (b) {
@@ -87,6 +97,19 @@ public class FriendsAdapter extends BaseAdapter {
                     mReference.removeValue();
                 }
 
+            }
+        });
+        takeBtn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                FirebaseDatabase.getInstance().getReference("packages/newPackages" + '/' + parcel.getAddressee().getPhoneNumber() + '/' +
+                        parcel.getParcelID()).removeValue();
+                mReference = FirebaseDatabase.getInstance().getReference("packages/oldPackages" + '/' + parcel.getAddressee().getPhoneNumber() + '/' +
+                        parcel.getParcelID());
+                mReference.setValue(parcel.getParcel());
+                mReference.child("deliver").setValue(parcel.getUser());
+                mReference.child("parcelID").setValue(parcel.getParcelID());
+                mReference.child("date").setValue(new SimpleDateFormat("dd/MM/yyyy HH:mm:ss").format(Calendar.getInstance().getTime()));
             }
         });
         parcelIDTV.setText((parcel.getParcelID()));

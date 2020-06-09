@@ -4,6 +4,7 @@ import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ListView;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
@@ -12,22 +13,60 @@ import androidx.fragment.app.Fragment;
 import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProviders;
 
+import com.example.socialdeliverysystem.Entites.Parcel;
+import com.example.socialdeliverysystem.Entites.Person;
 import com.example.socialdeliverysystem.R;
+import com.example.socialdeliverysystem.ui.MainActivity;
+import com.example.socialdeliverysystem.ui.userParcels.UserParcel;
+import com.example.socialdeliverysystem.ui.userParcels.UserParcelAdapter;
+import com.google.firebase.database.ChildEventListener;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
+
+import java.util.ArrayList;
 
 public class ParcelsHistoryFragment extends Fragment {
 
-    private SlideshowViewModel slideshowViewModel;
+    private Person user;
+    private ArrayList<ParcelHistory> parcelArrayList = new ArrayList<>();
+    private ParcelHistoryAdapter parcelArrayAdapter;
+    private DatabaseReference mReference;
+    private ListView parcelListView;
 
     public View onCreateView(@NonNull LayoutInflater inflater,
                              ViewGroup container, Bundle savedInstanceState) {
-        slideshowViewModel =
-                ViewModelProviders.of(this).get(SlideshowViewModel.class);
         View root = inflater.inflate(R.layout.fragment_parcels_history, container, false);
-        final TextView textView = root.findViewById(R.id.text_slideshow);
-        slideshowViewModel.getText().observe(getViewLifecycleOwner(), new Observer<String>() {
+        user = ((MainActivity) getActivity()).getUser();
+        parcelArrayAdapter = new ParcelHistoryAdapter(getActivity(), parcelArrayList);
+        parcelListView = (ListView) root.findViewById(R.id.list_view);
+        parcelListView.setAdapter(parcelArrayAdapter);
+        FirebaseDatabase.getInstance().getReference("packages/oldPackages" + '/' + user.getPhoneNumber()).addChildEventListener(new ChildEventListener() {
             @Override
-            public void onChanged(@Nullable String s) {
-                textView.setText(s);
+            public void onChildAdded(@NonNull DataSnapshot dataSnapshot, @Nullable String s) {
+                parcelArrayList.add(dataSnapshot.getValue(ParcelHistory.class));
+                parcelArrayAdapter.notifyDataSetChanged();
+            }
+
+            @Override
+            public void onChildChanged(@NonNull DataSnapshot dataSnapshot, @Nullable String s) {
+
+            }
+
+            @Override
+            public void onChildRemoved(@NonNull DataSnapshot dataSnapshot) {
+
+            }
+
+            @Override
+            public void onChildMoved(@NonNull DataSnapshot dataSnapshot, @Nullable String s) {
+
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError databaseError) {
+
             }
         });
         return root;

@@ -43,6 +43,9 @@ public class FriendsParcelsFragment extends Fragment {
                              ViewGroup container, Bundle savedInstanceState) {
         View root = inflater.inflate(R.layout.fragment_friends_parcels, container, false);
         user = ((MainActivity) getActivity()).getUser();
+        parcelAdapter = new FriendsAdapter(getActivity(), parcels);
+        listViewParcels = (ListView) root.findViewById(R.id.parcelListView);
+        listViewParcels.setAdapter(parcelAdapter);
         mReference1 = FirebaseDatabase.getInstance().getReference().child("packages").child("newPackages");
         mReference2 = FirebaseDatabase.getInstance().getReference().child("users");
         mReference1.addChildEventListener(new ChildEventListener() {
@@ -101,9 +104,6 @@ public class FriendsParcelsFragment extends Fragment {
             public void onCancelled(@NonNull DatabaseError databaseError) {
             }
         });
-        parcelAdapter = new FriendsAdapter(getActivity(), parcels);
-        listViewParcels = (ListView) root.findViewById(R.id.parcelListView);
-        listViewParcels.setAdapter(parcelAdapter);
         listViewParcels.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
