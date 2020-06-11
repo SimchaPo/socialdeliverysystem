@@ -7,41 +7,58 @@
     android:orientation="vertical"
     android:padding="16dp"
     tools:context=".ui.LoginActivity"
-    android:gravity="center">
+    android:gravity="center"
+    android:background="@drawable/delivery">
 
     <androidx.appcompat.widget.LinearLayoutCompat
         android:id="@+id/login_layout"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:orientation="vertical"
-        android:padding="16dp">
+        android:orientation="vertical">
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:gravity="center"
+            android:text="Social Delivery\nWELCOME"
+            android:textColorLink="#009688"
+            android:textSize="30sp"
+            android:textStyle="bold|italic" />
         <androidx.appcompat.widget.LinearLayoutCompat
             android:id="@+id/email_or_phone_layout"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="vertical"
             android:padding="16dp">
-        <com.google.android.material.textfield.TextInputLayout
-            android:id="@+id/login_input_phone_mail"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            app:boxBackgroundMode="outline"
-            app:errorEnabled="true">
 
-            <com.google.android.material.textfield.TextInputEditText
+            <com.google.android.material.textfield.TextInputLayout
+                android:id="@+id/login_input_phone_mail"
+                style="@style/myTextView"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:hint="Enter E-Mail or Phone Number"
-                android:inputType="text"
-                />
+                android:layout_margin="16dp"
+                app:boxBackgroundMode="outline"
+                app:errorEnabled="true"
+                android:padding="15dp"
+                android:background="@drawable/rounded_corner"
+                android:textColorHint="@color/colorYellow">
 
-        </com.google.android.material.textfield.TextInputLayout>
+                <com.google.android.material.textfield.TextInputEditText
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:hint="Enter E-Mail or Phone Number"
+                    android:inputType="text"
+                    android:textColor="#FFFFFF" />
+
+            </com.google.android.material.textfield.TextInputLayout>
 
             <Button
                 android:id="@+id/OpenTextBoxForCodeOrPassword"
-                android:layout_width="match_parent"
+                android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_centerInParent="true"
+                android:layout_gravity="center"
                 android:background="@drawable/button_style"
                 android:onClick="OpenTextBoxForCodeOrPassword"
                 android:text="Next" />
@@ -62,30 +79,43 @@
                 android:id="@+id/login_input_password"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                app:passwordToggleEnabled="true"
+                style="@style/myTextView"
+                android:layout_margin="16dp"
                 app:boxBackgroundMode="outline"
                 app:errorEnabled="true"
-                app:passwordToggleEnabled="true">
+                android:padding="15dp"
+                android:background="@drawable/rounded_corner"
+                android:textColorHint="@color/colorYellow">
 
                 <com.google.android.material.textfield.TextInputEditText
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:hint="@string/enter_your_password"
-                    android:inputType="textPassword" />
+                    android:inputType="textPassword"
+                    android:textColor="@color/colorWhite"/>
+
             </com.google.android.material.textfield.TextInputLayout>
 
                 <TextView
                     android:id="@+id/reset_password"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
+                    android:onClick="resetPasswordOnClick"
+                    android:text="Forgot Password? Click To Reset"
                     android:layout_gravity="center"
                     android:clickable="true"
                     android:contextClickable="false"
-                    android:onClick="resetPasswordOnClick"
-                    android:text="Forgot Password? Click To Reset"
+                    android:gravity="center"
+                    android:hint="@string/click_to_sign_up"
+                    android:padding="16dp"
+                    android:textAllCaps="false"
                     android:textColor="@color/colorAccent"
-                    android:textSize="16sp"
-                    android:textStyle="bold" />
+                    android:textStyle="bold"
+                    style="@style/myTextView"
+                    android:background="@drawable/rounded_corner"/>
             </androidx.appcompat.widget.LinearLayoutCompat>
+
             <androidx.appcompat.widget.LinearLayoutCompat
                 android:id="@+id/code_entry"
                 android:layout_width="match_parent"
@@ -94,16 +124,22 @@
                 android:visibility="gone">
             <com.google.android.material.textfield.TextInputLayout
                 android:id="@+id/login_input_sms"
+                style="@style/myTextView"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:layout_margin="16dp"
                 app:boxBackgroundMode="outline"
-                app:errorEnabled="true">
+                app:errorEnabled="true"
+                android:padding="15dp"
+                android:background="@drawable/rounded_corner"
+                android:textColorHint="@color/colorYellow">
 
                 <com.google.android.material.textfield.TextInputEditText
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:hint="@string/enter_code_from_sms"
-                    android:inputType="number" />
+                    android:inputType="number"
+                    android:textColor="@color/colorWhite"/>
 
             </com.google.android.material.textfield.TextInputLayout>
 
@@ -116,42 +152,61 @@
                     android:contextClickable="false"
                     android:onClick="GoBackOnClick"
                     android:text="Didn't Receive a Code? Try Email Verify"
+                    android:gravity="center"
+                    android:hint="@string/click_to_sign_up"
+                    android:padding="16dp"
+                    android:textAllCaps="false"
                     android:textColor="@color/colorAccent"
-                    android:textSize="16sp"
-                    android:textStyle="bold" />
+                    android:textStyle="bold"
+                    style="@style/myTextView"
+                    android:background="@drawable/rounded_corner"/>
             </androidx.appcompat.widget.LinearLayoutCompat>
+
+            <Button
+                android:id="@+id/log_in_btn"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:onClick="logInOnClick"
+                android:text="@string/log_in"
+                android:layout_centerInParent="true"
+                android:background="@drawable/button_style"
+                android:layout_marginLeft="16dp"
+                android:layout_marginTop="8dp"
+                android:layout_marginRight="16dp"
+                android:layout_marginBottom="8dp"/>
+
             <Button
                 android:id="@+id/go_back"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:background="@drawable/button_style"
-                android:layout_centerInParent="true"
                 android:onClick="GoBackOnClick"
-                android:text="@string/go_back" />
+                android:text="@string/go_back"
+                android:layout_centerInParent="true"
+                android:background="@drawable/button_style"
+                android:layout_marginLeft="16dp"
+                android:layout_marginTop="8dp"
+                android:layout_marginRight="16dp"
+                android:layout_marginBottom="8dp"/>
 
-    <Button
-        android:id="@+id/log_in_btn"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_centerInParent="true"
-        android:background="@drawable/button_style"
-        android:onClick="logInOnClick"
-        android:text="@string/log_in" />
         </androidx.appcompat.widget.LinearLayoutCompat>
 
         <TextView
             android:id="@+id/signInText"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:text="@string/don_t_have_an_account_sign_up"
             android:layout_gravity="center"
             android:clickable="true"
             android:contextClickable="false"
-            android:hint="Click To Sign In"
-            android:onClick="SignInOnClick"
-            android:text="@string/don_t_have_an_account_sign_in"
+            android:gravity="center"
+            android:hint="@string/click_to_sign_up"
+            android:onClick="SignUpOnClick"
+            android:padding="16dp"
             android:textAllCaps="false"
             android:textColor="@color/colorAccent"
-            android:textSize="20sp"
-            android:textStyle="bold" />
+            android:textStyle="bold"
+            style="@style/myTextView"
+            android:background="@drawable/rounded_corner"/>
     </androidx.appcompat.widget.LinearLayoutCompat>
+
 </androidx.appcompat.widget.LinearLayoutCompat>

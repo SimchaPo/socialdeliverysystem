@@ -12,6 +12,7 @@ import com.example.socialdeliverysystem.R;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.android.material.snackbar.Snackbar;
 import com.google.android.material.navigation.NavigationView;
+import com.google.firebase.auth.FirebaseAuth;
 
 import androidx.navigation.NavController;
 import androidx.navigation.Navigation;
@@ -22,6 +23,7 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 
 public class MainActivity extends AppCompatActivity {
+
 
     private AppBarConfiguration mAppBarConfiguration;
     private Person user;
@@ -71,6 +73,7 @@ public class MainActivity extends AppCompatActivity {
     }
 
     public void log_out(MenuItem item) {
+        FirebaseAuth.getInstance().signOut();
         this.finishAffinity();
         startActivity(new Intent(this, LoginActivity.class));
     }

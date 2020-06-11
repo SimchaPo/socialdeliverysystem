@@ -17,4 +17,11 @@
 
     <style name="AppTheme.PopupOverlay" parent="ThemeOverlay.AppCompat.Light" />
 
+    <style name="myTextView" parent="android:TextAppearance">
+        <item name="android:textColor">#FFFFFF</item>
+        <item name="android:background">#99141414</item>
+        <item name="android:textSize">16sp</item>
+        <item name="errorTextColor">#FFFFFF</item>
+        <item name="hintTextColor">#FFFFFF</item>
+    </style>
 </resources>

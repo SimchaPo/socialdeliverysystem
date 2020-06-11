@@ -5,8 +5,6 @@ import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.LinearLayoutCompat;
 
-import android.app.Activity;
-import android.content.ActivityNotFoundException;
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
@@ -35,8 +33,6 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 
-import java.util.ArrayList;
-import java.util.List;
 import java.util.concurrent.TimeUnit;
 import java.util.regex.Pattern;
 
@@ -60,8 +56,30 @@ public class LoginActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_login);
-        findView();
+        final FirebaseUser currentUser = FirebaseAuth.getInstance().getCurrentUser();
+        if (currentUser != null && currentUser.isEmailVerified()) {
+            FirebaseDatabase.getInstance().getReference("users").addListenerForSingleValueEvent(new ValueEventListener() {
+                @Override
+                public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                    for (DataSnapshot ds : dataSnapshot.getChildren()) {
+                        if (ds.child("email").getValue(String.class).equals(currentUser.getEmail())) {
+                            user = dataSnapshot.child(ds.getKey()).getValue(Person.class);
+                            Intent mainActivity = new Intent(getApplicationContext(), MainActivity.class);
+                            mainActivity.putExtra("user", user);
+                            startActivity(mainActivity);
+                        }
+                    }
+                }
+
+                @Override
+                public void onCancelled(@NonNull DatabaseError databaseError) {
+
+                }
+            });
+        }else{
+            setContentView(R.layout.activity_login);
+            findView();
+        }
     }
 
     private void findView() {
@@ -77,9 +95,9 @@ public class LoginActivity extends AppCompatActivity {
         mReference = FirebaseDatabase.getInstance().getReference().child("users");
     }
 
-    public void SignInOnClick(View view) {
-        Intent signIn = new Intent(getApplicationContext(), SigninActivity.class);
-        startActivity(signIn);
+    public void SignUpOnClick(View view) {
+        Intent signUp = new Intent(getApplicationContext(), SignUpActivity.class);
+        startActivity(signUp);
     }
 
     private void sendVerificationCode(String mobile) {
@@ -246,11 +264,9 @@ public class LoginActivity extends AppCompatActivity {
     }
 
     public void logInOnClick(View view) {
-        logInBtn.setEnabled(false);
         if (email) {
             if (editPassword.getEditText().getText().toString().isEmpty()) {
                 editPassword.setError("Please Enter Password");
-                logInBtn.setEnabled(true);
                 return;
             }
             mAuth.signInWithEmailAndPassword(phoneOrMailText, editPassword.getEditText().getText().toString())
@@ -297,19 +313,16 @@ public class LoginActivity extends AppCompatActivity {
                                 } else {
                                     Toast.makeText(LoginActivity.this, "Please Verify Your Email Address",
                                             Toast.LENGTH_LONG).show();
-                                    logInBtn.setEnabled(true);
                                 }
                             } else {
                                 Toast.makeText(LoginActivity.this, "Authentication failed.",
                                         Toast.LENGTH_LONG).show();
-                                logInBtn.setEnabled(true);
                             }
                         }
                     });
         } else if (phone) {
             if (editCode.getEditText().getText().toString().isEmpty()) {
                 editCode.setError("Please Enter Code");
-                logInBtn.setEnabled(true);
                 return;
             }
 

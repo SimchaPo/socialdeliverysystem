@@ -12,7 +12,7 @@
     <string name="menu_slideshow">Slideshow</string>
 
     <string name="home_second">Home Second</string>
-    <string name="enter_youe_email">Enter Youe Email</string>
+    <string name="enter_your_email">Enter Youe Email</string>
     <string name="enter_your_password">Enter Your Password</string>
     <string name="first_name">First Name</string>
     <string name="last_name">Last Name</string>
@@ -30,4 +30,6 @@
     <string name="friends_parcels">Friends Parcels</string>
     <string name="history_parcels">History Parcels</string>
     <string name="log_out">Log Out</string>
+    <string name="don_t_have_an_account_sign_up">Don\'t have an account? sign up</string>
+    <string name="click_to_sign_up">Click To Sign Up</string>
 </resources>
