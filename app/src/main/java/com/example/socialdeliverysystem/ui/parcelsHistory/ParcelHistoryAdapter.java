@@ -2,6 +2,10 @@ package com.example.socialdeliverysystem.ui.parcelsHistory;
 
 import android.app.Activity;
 import android.content.Context;
+import android.graphics.Color;
+import android.text.SpannableString;
+import android.text.SpannableStringBuilder;
+import android.text.style.ForegroundColorSpan;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -30,7 +34,6 @@ import java.util.Calendar;
 public class ParcelHistoryAdapter extends BaseAdapter {
     ArrayList<ParcelHistory> parcels;
     private static LayoutInflater inflater = null;
-    private DatabaseReference mReference;
 
     public ParcelHistoryAdapter(Activity context, ArrayList<ParcelHistory> parcels) {
         this.parcels = parcels;
@@ -61,10 +64,20 @@ public class ParcelHistoryAdapter extends BaseAdapter {
         TextView deliverPhoneNumberTV = (TextView) itemView.findViewById(R.id.deliver_phone_number);
         TextView dateTV = (TextView) itemView.findViewById(R.id.date);
         final ParcelHistory parcel = parcels.get(i);
-        parcelIDTV.setText((parcel.getParcelID()));
-        deliverNameTV.setText(parcel.getDeliver().getFirstName() + " " + parcel.getDeliver().getLastName());
-        deliverPhoneNumberTV.setText(parcel.getDeliver().getPhoneNumber());
-        dateTV.setText(parcel.getDate());
+        parcelIDTV.setText(getBuilder("Parcel ID: ", parcel.getParcelID()), TextView.BufferType.SPANNABLE);
+        deliverNameTV.setText(getBuilder("Deliver: ", parcel.getDeliver().getFirstName() + " " + parcel.getDeliver().getLastName()), TextView.BufferType.SPANNABLE);
+        deliverPhoneNumberTV.setText(getBuilder("Deliver Phone Number: ", parcel.getDeliver().getPhoneNumber()), TextView.BufferType.SPANNABLE);
+        dateTV.setText(getBuilder("Delivery Date: ", parcel.getDate()), TextView.BufferType.SPANNABLE);
         return itemView;
+    }
+    private SpannableStringBuilder getBuilder(String s1, String s2) {
+        SpannableStringBuilder builder = new SpannableStringBuilder();
+        SpannableString str1 = new SpannableString(s1);
+        str1.setSpan(new ForegroundColorSpan(Color.YELLOW), 0, str1.length(), 0);
+        builder.append(str1);
+        SpannableString str2 = new SpannableString(s2);
+        str2.setSpan(new ForegroundColorSpan(Color.WHITE), 0, str2.length(), 0);
+        builder.append(str2);
+        return builder;
     }
 }

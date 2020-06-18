@@ -279,9 +279,9 @@ public class LoginActivity extends AppCompatActivity {
                                     mReference.addChildEventListener(new ChildEventListener() {
                                         @Override
                                         public void onChildAdded(@NonNull DataSnapshot dataSnapshot, @Nullable String s) {
-                                            String userEmail = dataSnapshot.child("email").getValue().toString();
+                                            String userEmail = dataSnapshot.child("email").getValue().toString().toLowerCase();
 
-                                            if (userEmail.equals(phoneOrMailText)) {
+                                            if (userEmail.equals(phoneOrMailText.toLowerCase())) {
                                                 user = dataSnapshot.getValue(Person.class);
                                                 Intent mainActivity = new Intent(getApplicationContext(), MainActivity.class);
                                                 mainActivity.putExtra("user", user);

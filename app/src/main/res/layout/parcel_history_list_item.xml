@@ -3,30 +3,32 @@
     xmlns:android="http://schemas.android.com/apk/res/android" android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:padding="16dp"
-    android:orientation="vertical">
+    android:orientation="vertical"
+    android:background="@drawable/rounded_corner">
 
     <TextView
         android:id="@+id/parcel_id"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:textSize="20sp" />
+        android:textSize="18sp"
+        android:gravity="center"/>
 
     <TextView
         android:id="@+id/deliver_name"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:textSize="20sp"/>
-
+        android:textSize="18sp"
+        android:gravity="center"/>
     <TextView
         android:id="@+id/deliver_phone_number"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:textSize="20sp" />
-
+        android:textSize="18sp"
+        android:gravity="center"/>
     <TextView
         android:id="@+id/date"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:textSize="20sp" />
-
+        android:textSize="18sp"
+        android:gravity="center"/>
 </androidx.appcompat.widget.LinearLayoutCompat>

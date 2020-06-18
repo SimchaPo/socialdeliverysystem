@@ -5,11 +5,14 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     tools:context=".ui.userParcels.RegisteredParcelsFragment"
-    android:padding="16dp">
+    android:padding="16dp"
+    android:background="@drawable/delivery">
 
     <ListView
         android:id="@+id/parcelListView"
         android:layout_width="match_parent"
-        android:layout_height="match_parent" />
+        android:layout_height="match_parent"
+        tools:layout_editor_absoluteX="16dp"
+        tools:layout_editor_absoluteY="16dp"/>
 
   </androidx.constraintlayout.widget.ConstraintLayout>

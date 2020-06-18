@@ -6,91 +6,42 @@
     android:layout_height="match_parent"
     android:padding="16dp"
     android:orientation="vertical"
-    android:background="@color/cardview_light_background">
-    <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:orientation="horizontal">
-    <TextView
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:textSize="18sp"
-        android:text="Addressee Name: "
-        android:textColor="@color/colorPrimaryDark"
-        android:layout_weight="65"/>
-    <TextView
-        android:id="@+id/addressee_name"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:textSize="18sp"
-        android:layout_weight="40"
-        android:layout_marginLeft="1dp"/>
-    </LinearLayout>
-    <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:orientation="horizontal">
-    <TextView
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:textSize="18sp"
-        android:text="Parcel ID: "
-        android:textColor="@color/colorPrimaryDark"
-        android:layout_weight="70"/>
+    android:background="@drawable/rounded_corner">
+
     <TextView
         android:id="@+id/parcel_id"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:textSize="18sp"
-        android:layout_weight="30"/>
-    </LinearLayout>
+        android:gravity="center"/>
     <TextView
+        android:id="@+id/addressee_name"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:textSize="18sp"
-        android:text="Addressee Address: "
-        android:textColor="@color/colorPrimaryDark"
-        />
+        android:gravity="center"/>
     <TextView
         android:id="@+id/addressee_address"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:textSize="16sp" />
-    <TextView
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
         android:textSize="18sp"
-        android:text="Storage Location: "
-        android:textColor="@color/colorPrimaryDark"
-        />
+        android:gravity="center"/>
     <TextView
         android:id="@+id/storage_location"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:textSize="16sp" />
-
+        android:textSize="18sp"
+        android:gravity="center"/>
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="horizontal">
-        <TextView
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_weight="60"
-            android:textSize="18sp"
-            android:text="Distance: "/>
         <TextView
             android:id="@+id/distance"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_weight="50"
             android:textSize="18sp" />
-        <TextView
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_weight="60"
-            android:textSize="18sp"
-            android:text=" KM"/>
 
         <Switch
             android:id="@+id/can_take_switch"
@@ -105,7 +56,9 @@
             android:layout_height="wrap_content"
             android:layout_weight="50"
             android:text="Take Parcel"
+            android:background="@drawable/button_style"
             android:visibility="gone"/>
+
 
     </LinearLayout>
 </androidx.appcompat.widget.LinearLayoutCompat>

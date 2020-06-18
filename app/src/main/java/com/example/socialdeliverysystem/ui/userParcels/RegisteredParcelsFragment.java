@@ -41,6 +41,7 @@ public class RegisteredParcelsFragment extends Fragment {
         mReference = FirebaseDatabase.getInstance().getReference().child("packages").child("newPackages").child(user.getPhoneNumber());
         parcelArrayAdapter = new UserParcelAdapter(getActivity(), parcelArrayList);
         parcelListView = (ListView) root.findViewById(R.id.parcelListView);
+        parcelArrayList.clear();
         parcelListView.setAdapter(parcelArrayAdapter);
         mReference.addChildEventListener(new ChildEventListener() {
             @Override

@@ -6,13 +6,12 @@
     android:layout_height="match_parent"
     tools:context=".ui.friendsParcels.FriendsParcelsFragment"
     android:padding="16dp"
-    android:background="@color/cardview_shadow_end_color">
+    android:background="@drawable/delivery">
 
     <ListView
         android:id="@+id/parcelListView"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:background="#03A9F4"
         tools:layout_editor_absoluteX="16dp"
         tools:layout_editor_absoluteY="16dp" />
 

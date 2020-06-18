@@ -41,6 +41,7 @@ public class ParcelsHistoryFragment extends Fragment {
         user = ((MainActivity) getActivity()).getUser();
         parcelArrayAdapter = new ParcelHistoryAdapter(getActivity(), parcelArrayList);
         parcelListView = (ListView) root.findViewById(R.id.list_view);
+        parcelArrayList.clear();
         parcelListView.setAdapter(parcelArrayAdapter);
         FirebaseDatabase.getInstance().getReference("packages/oldPackages" + '/' + user.getPhoneNumber()).addChildEventListener(new ChildEventListener() {
             @Override

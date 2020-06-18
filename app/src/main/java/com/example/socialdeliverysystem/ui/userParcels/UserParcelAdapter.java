@@ -2,6 +2,10 @@ package com.example.socialdeliverysystem.ui.userParcels;
 
 import android.app.Activity;
 import android.content.Context;
+import android.graphics.Color;
+import android.text.SpannableString;
+import android.text.SpannableStringBuilder;
+import android.text.style.ForegroundColorSpan;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -64,16 +68,27 @@ public class UserParcelAdapter extends BaseAdapter {
                 openDialog(parcels.get(i));
             }
         });
-        parcelIDTV.setText((parcel.getParcelID()));
-        storageLocationTV.setText(parcel.getParcel().getStorage());
-        packageTypeTV.setText(parcel.getParcel().getPackageType());
-        packageSizeTV.setText(parcel.getParcel().getPackageSize());
-        packageFragileTV.setText(String.valueOf(parcel.getParcel().isFragile()));
+        parcelIDTV.setText(getBuilder("Parcel ID: ", parcel.getParcelID()), TextView.BufferType.SPANNABLE);
+        storageLocationTV.setText(getBuilder("Storage Location:\n", parcel.getParcel().getStorage()), TextView.BufferType.SPANNABLE);
+        packageTypeTV.setText(getBuilder("Type: ", parcel.getParcel().getPackageType()), TextView.BufferType.SPANNABLE);
+        packageSizeTV.setText(getBuilder("Size: ", parcel.getParcel().getPackageSize() + " KG   "), TextView.BufferType.SPANNABLE);
+        packageFragileTV.setText(getBuilder("Fragility: ", parcel.getParcel().isFragile()), TextView.BufferType.SPANNABLE);
         return itemView;
     }
 
     private void openDialog(UserParcel userParcel) {
         UserDeliveryDialog dialog = new UserDeliveryDialog(userParcel);
         dialog.show(fragmentActivity.getSupportFragmentManager(), "delivers dialog");
+    }
+
+    private SpannableStringBuilder getBuilder(String s1, String s2) {
+        SpannableStringBuilder builder = new SpannableStringBuilder();
+        SpannableString str1 = new SpannableString(s1);
+        str1.setSpan(new ForegroundColorSpan(Color.YELLOW), 0, str1.length(), 0);
+        builder.append(str1);
+        SpannableString str2 = new SpannableString(s2);
+        str2.setSpan(new ForegroundColorSpan(Color.WHITE), 0, str2.length(), 0);
+        builder.append(str2);
+        return builder;
     }
 }

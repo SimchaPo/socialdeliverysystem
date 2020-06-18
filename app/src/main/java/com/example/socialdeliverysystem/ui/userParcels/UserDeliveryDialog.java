@@ -40,12 +40,7 @@ public class UserDeliveryDialog extends AppCompatDialogFragment {
         AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
         LayoutInflater inflater = getActivity().getLayoutInflater();
         View view = inflater.inflate(R.layout.user_delivery_dialog, null);
-        builder.setView(view).setTitle("Optional Delivers").setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
-            @Override
-            public void onClick(DialogInterface dialogInterface, int i) {
-
-            }
-        }).setPositiveButton("Ok", new DialogInterface.OnClickListener() {
+        builder.setView(view).setTitle("Optional Delivers").setNegativeButton("Close", new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialogInterface, int i) {
 

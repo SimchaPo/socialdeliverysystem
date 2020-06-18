@@ -2,6 +2,10 @@ package com.example.socialdeliverysystem.ui.friendsParcels;
 
 import android.app.Activity;
 import android.content.Context;
+import android.graphics.Color;
+import android.text.SpannableString;
+import android.text.SpannableStringBuilder;
+import android.text.style.ForegroundColorSpan;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -102,6 +106,8 @@ public class FriendsAdapter extends BaseAdapter {
         takeBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+                takeBtn.setEnabled(false);
+                takeBtn.setText("Token");
                 FirebaseDatabase.getInstance().getReference("packages/newPackages" + '/' + parcel.getAddressee().getPhoneNumber() + '/' +
                         parcel.getParcelID()).removeValue();
                 mReference = FirebaseDatabase.getInstance().getReference("packages/oldPackages" + '/' + parcel.getAddressee().getPhoneNumber() + '/' +
@@ -112,11 +118,22 @@ public class FriendsAdapter extends BaseAdapter {
                 mReference.child("date").setValue(new SimpleDateFormat("dd/MM/yyyy HH:mm:ss").format(Calendar.getInstance().getTime()));
             }
         });
-        parcelIDTV.setText((parcel.getParcelID()));
-        storageLocationTV.setText(parcel.getParcel().getStorage());
-        addresseeAddressTV.setText(parcel.getAddresseeAddress());
-        addresseeNameTV.setText(parcel.getAddresseeName());
-        dist.setText(String.valueOf(parcel.getDistance()));
+        parcelIDTV.setText(getBuilder("Parcel ID: ", parcel.getParcelID()), TextView.BufferType.SPANNABLE);
+        storageLocationTV.setText(getBuilder("Storage Location:\n", parcel.getParcel().getStorage()), TextView.BufferType.SPANNABLE);
+        addresseeAddressTV.setText(getBuilder("Addressee Address:\n", parcel.getAddresseeAddress()), TextView.BufferType.SPANNABLE);
+        addresseeNameTV.setText(getBuilder("Addressee Name: ", parcel.getAddresseeName()), TextView.BufferType.SPANNABLE);
+        dist.setText(getBuilder("Distance: ", String.format("%.2f", parcel.getDistance()) + " KM"), TextView.BufferType.SPANNABLE);
         return itemView;
+    }
+
+    private SpannableStringBuilder getBuilder(String s1, String s2) {
+        SpannableStringBuilder builder = new SpannableStringBuilder();
+        SpannableString str1 = new SpannableString(s1);
+        str1.setSpan(new ForegroundColorSpan(Color.YELLOW), 0, str1.length(), 0);
+        builder.append(str1);
+        SpannableString str2 = new SpannableString(s2);
+        str2.setSpan(new ForegroundColorSpan(Color.WHITE), 0, str2.length(), 0);
+        builder.append(str2);
+        return builder;
     }
 }

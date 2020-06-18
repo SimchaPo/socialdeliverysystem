@@ -48,6 +48,7 @@ public class FriendsParcelsFragment extends Fragment {
         listViewParcels.setAdapter(parcelAdapter);
         mReference1 = FirebaseDatabase.getInstance().getReference().child("packages").child("newPackages");
         mReference2 = FirebaseDatabase.getInstance().getReference().child("users");
+        parcels.clear();
         mReference1.addChildEventListener(new ChildEventListener() {
             @Override
             public void onChildAdded(@NonNull final DataSnapshot ds1, @Nullable String s) {
