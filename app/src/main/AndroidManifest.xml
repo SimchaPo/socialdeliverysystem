@@ -9,12 +9,12 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="false"
         android:theme="@style/AppTheme">
-        <service android:name=".BroadcastService">
-        </service>
+        <service android:name=".BroadcastService" />
         <activity android:name=".ui.SignUpActivity" />
         <activity
             android:name=".ui.MainActivity"
             android:theme="@style/AppTheme.NoActionBar" />
+
         <activity
             android:name=".ui.LoginActivity"
             android:label="@string/social_delivery"
@@ -25,6 +25,7 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
+
     </application>
 
 </manifest>
