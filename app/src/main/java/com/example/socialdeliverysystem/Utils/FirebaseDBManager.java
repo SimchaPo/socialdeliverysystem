@@ -1,19 +1,10 @@
 package com.example.socialdeliverysystem.Utils;
 
-import androidx.annotation.NonNull;
-
 import com.example.socialdeliverysystem.Entites.Person;
-import com.google.android.gms.tasks.OnFailureListener;
-import com.google.android.gms.tasks.OnSuccessListener;
-import com.google.firebase.FirebaseError;
-import com.google.firebase.database.DataSnapshot;
-import com.google.firebase.database.DatabaseError;
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
-import com.google.firebase.database.ValueEventListener;
-
-import java.util.ArrayList;
-import java.util.List;
 
 public class FirebaseDBManager {
     public interface Action<T> {
@@ -30,29 +21,36 @@ public class FirebaseDBManager {
         void onFailure(Exception exception);
     }
 
+    public static DatabaseReference databaseReference;
     public static DatabaseReference usersRef;
-    public static List<Person> usersList;
+    public static DatabaseReference newPackagesRef;
+    public static DatabaseReference oldPackagesRef;
+    private static Person currentUserPerson;
+    private static FirebaseUser currentUser;
 
-    static {
-        FirebaseDatabase database = FirebaseDatabase.getInstance();
-        usersRef = database.getReference("users");
-        usersList = new ArrayList<>();
+    public static FirebaseUser getCurrentUser() {
+        currentUser = FirebaseAuth.getInstance().getCurrentUser();
+        return currentUser;
     }
 
-    public static void addUserToFirebase(final Person users, final Action<String> action) {
-        usersRef.child(users.getPhoneNumber()).setValue(users).addOnSuccessListener(new OnSuccessListener<Void>() {
-            @Override
-            public void onSuccess(Void aVoid) {
-                action.onSuccess(users.getPhoneNumber());
-                action.onProgress("upload packages data", 100);
-            }
-        }).addOnFailureListener(new OnFailureListener() {
-            @Override
-            public void onFailure(@NonNull Exception e) {
-                action.onFailure(e);
-                action.onProgress("error upload packages data", 100);
-            }
-        });
+    public static void setCurrentUserPerson(Person user) {
+        currentUserPerson = user;
+    }
+
+    public static Person getCurrentUserPerson() {
+        return FirebaseAuth.getInstance().getCurrentUser() != null ? currentUserPerson : null;
+    }
+
+
+    static {
+        databaseReference = FirebaseDatabase.getInstance().getReference();
+        usersRef = databaseReference.child("users").getRef();
+        newPackagesRef = databaseReference.child("packages/newPackages").getRef();
+        oldPackagesRef = databaseReference.child("packages/oldPackages").getRef();
+    }
+
+    public static void addUserToFirebase(final Person users) {
+        usersRef.child(users.getPhoneNumber()).setValue(users);
     }
 
 }

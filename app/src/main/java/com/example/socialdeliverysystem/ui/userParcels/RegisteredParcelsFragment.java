@@ -16,6 +16,7 @@ import androidx.fragment.app.Fragment;
 import com.example.socialdeliverysystem.Entites.Parcel;
 import com.example.socialdeliverysystem.Entites.Person;
 import com.example.socialdeliverysystem.R;
+import com.example.socialdeliverysystem.Utils.FirebaseDBManager;
 import com.example.socialdeliverysystem.ui.MainActivity;
 import com.google.firebase.database.ChildEventListener;
 import com.google.firebase.database.DataSnapshot;
@@ -27,7 +28,7 @@ import java.util.ArrayList;
 
 public class RegisteredParcelsFragment extends Fragment {
 
-    private Person user;
+    //private Person user;
     private ArrayList<UserParcel> parcelArrayList = new ArrayList<>();
     private UserParcelAdapter parcelArrayAdapter;
     private DatabaseReference mReference;
@@ -37,12 +38,16 @@ public class RegisteredParcelsFragment extends Fragment {
     public View onCreateView(@NonNull LayoutInflater inflater,
                              ViewGroup container, Bundle savedInstanceState) {
         View root = inflater.inflate(R.layout.fragment_home_user_parcels, container, false);
-        user = ((MainActivity) getActivity()).getUser();
-        mReference = FirebaseDatabase.getInstance().getReference().child("packages").child("newPackages").child(user.getPhoneNumber());
+        mReference = FirebaseDBManager.newPackagesRef.child(FirebaseDBManager.getCurrentUserPerson().getPhoneNumber());
         parcelArrayAdapter = new UserParcelAdapter(getActivity(), parcelArrayList);
         parcelListView = (ListView) root.findViewById(R.id.parcelListView);
         parcelArrayList.clear();
         parcelListView.setAdapter(parcelArrayAdapter);
+        setFirebaseListener();
+        return root;
+    }
+
+    private void setFirebaseListener() {
         mReference.addChildEventListener(new ChildEventListener() {
             @Override
             public void onChildAdded(@NonNull DataSnapshot dataSnapshot, @Nullable String s) {
@@ -70,6 +75,5 @@ public class RegisteredParcelsFragment extends Fragment {
 
             }
         });
-        return root;
     }
 }

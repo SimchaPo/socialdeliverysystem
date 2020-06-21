@@ -24,9 +24,13 @@ import java.util.ArrayList;
 public class UserParcelAdapter extends BaseAdapter {
     ArrayList<UserParcel> parcels;
     private static LayoutInflater inflater = null;
-    private DatabaseReference mReference;
     private FragmentActivity fragmentActivity;
     private UserParcel parcel;
+    private TextView parcelIDTV;
+    private TextView storageLocationTV;
+    private TextView packageTypeTV;
+    private TextView packageSizeTV;
+    private TextView packageFragileTV;
 
     public UserParcelAdapter(FragmentActivity fragmentActivity, ArrayList<UserParcel> parcels) {
         this.parcels = parcels;
@@ -34,9 +38,10 @@ public class UserParcelAdapter extends BaseAdapter {
         inflater = (LayoutInflater) fragmentActivity.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
     }
 
-    public UserParcel getParcel(){
+    public UserParcel getParcel() {
         return parcel;
     }
+
     @Override
     public int getCount() {
         return parcels.size();
@@ -56,11 +61,7 @@ public class UserParcelAdapter extends BaseAdapter {
     public View getView(final int i, final View convertView, ViewGroup viewGroup) {
         View itemView = convertView;
         itemView = (itemView == null) ? inflater.inflate(R.layout.user_fragment_list_item, null) : itemView;
-        TextView parcelIDTV = (TextView) itemView.findViewById(R.id.parcel_id);
-        TextView storageLocationTV = (TextView) itemView.findViewById(R.id.storage_location);
-        TextView packageTypeTV = (TextView) itemView.findViewById(R.id.parcel_type);
-        TextView packageSizeTV = (TextView) itemView.findViewById(R.id.parcel_weight);
-        TextView packageFragileTV = (TextView) itemView.findViewById(R.id.parcel_is_fragile);
+        findView(itemView);
         parcel = parcels.get(i);
         itemView.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -74,6 +75,14 @@ public class UserParcelAdapter extends BaseAdapter {
         packageSizeTV.setText(getBuilder("Size: ", parcel.getParcel().getPackageSize() + " KG   "), TextView.BufferType.SPANNABLE);
         packageFragileTV.setText(getBuilder("Fragility: ", parcel.getParcel().isFragile()), TextView.BufferType.SPANNABLE);
         return itemView;
+    }
+
+    private void findView(View itemView) {
+        parcelIDTV = (TextView) itemView.findViewById(R.id.parcel_id);
+        storageLocationTV = (TextView) itemView.findViewById(R.id.storage_location);
+        packageTypeTV = (TextView) itemView.findViewById(R.id.parcel_type);
+        packageSizeTV = (TextView) itemView.findViewById(R.id.parcel_weight);
+        packageFragileTV = (TextView) itemView.findViewById(R.id.parcel_is_fragile);
     }
 
     private void openDialog(UserParcel userParcel) {

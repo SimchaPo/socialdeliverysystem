@@ -16,6 +16,7 @@ import androidx.appcompat.app.AppCompatDialogFragment;
 import com.example.socialdeliverysystem.Entites.Parcel;
 import com.example.socialdeliverysystem.Entites.Person;
 import com.example.socialdeliverysystem.R;
+import com.example.socialdeliverysystem.Utils.FirebaseDBManager;
 import com.google.firebase.database.ChildEventListener;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
@@ -47,7 +48,14 @@ public class UserDeliveryDialog extends AppCompatDialogFragment {
             }
         });
         deliversAdapter = new UserDeliversAdapter(getActivity(), deliversArrayList, userParcel);
-        mReference = FirebaseDatabase.getInstance().getReference().child("packages/newPackages").child(userParcel.getParcel().getAddresseeKey()).child(userParcel.getParcelID()).child("delivers");
+        mReference = FirebaseDBManager.newPackagesRef.child(userParcel.getParcel().getAddresseeKey()).child(userParcel.getParcelID()).child("delivers");
+        setFirebaseListener();
+        listView = (ListView) view.findViewById(R.id.delivers_list_view);
+        listView.setAdapter(deliversAdapter);
+        return builder.create();
+    }
+
+    private void setFirebaseListener() {
         mReference.addChildEventListener(new ChildEventListener() {
             @Override
             public void onChildAdded(@NonNull DataSnapshot ds1, @Nullable String s) {
@@ -87,8 +95,5 @@ public class UserDeliveryDialog extends AppCompatDialogFragment {
 
             }
         });
-        listView = (ListView) view.findViewById(R.id.delivers_list_view);
-        listView.setAdapter(deliversAdapter);
-        return builder.create();
     }
 }

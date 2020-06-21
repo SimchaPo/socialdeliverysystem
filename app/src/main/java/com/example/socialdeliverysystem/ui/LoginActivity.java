@@ -49,24 +49,19 @@ public class LoginActivity extends AppCompatActivity {
     private String mVerificationId;
     private FirebaseAuth mAuth;
     private String phoneOrMailText;
-    private Button logInBtn;
-    private DatabaseReference mReference;
     private Person user;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        final FirebaseUser currentUser = FirebaseAuth.getInstance().getCurrentUser();
-        if (currentUser != null && currentUser.isEmailVerified()) {
-            FirebaseDatabase.getInstance().getReference("users").addListenerForSingleValueEvent(new ValueEventListener() {
+        if (FirebaseDBManager.getCurrentUser() != null && FirebaseDBManager.getCurrentUser().isEmailVerified()) {
+            FirebaseDBManager.usersRef.addListenerForSingleValueEvent(new ValueEventListener() {
                 @Override
                 public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
                     for (DataSnapshot ds : dataSnapshot.getChildren()) {
-                        if (ds.child("email").getValue(String.class).equals(currentUser.getEmail())) {
+                        if (ds.child("email").getValue(String.class).equals(FirebaseDBManager.getCurrentUser().getEmail())) {
                             user = dataSnapshot.child(ds.getKey()).getValue(Person.class);
-                            Intent mainActivity = new Intent(getApplicationContext(), MainActivity.class);
-                            mainActivity.putExtra("user", user);
-                            startActivity(mainActivity);
+                            startMainActivity();
                         }
                     }
                 }
@@ -76,10 +71,24 @@ public class LoginActivity extends AppCompatActivity {
 
                 }
             });
-        }else{
+        } else {
             setContentView(R.layout.activity_login);
             findView();
+            mAuth = FirebaseAuth.getInstance();
+            Intent i = getIntent();
+            if (i.getSerializableExtra("email") != null && i.getSerializableExtra("password") != null) {
+                editTextPhoneOrMailLogIn.getEditText().setText((String) i.getSerializableExtra("email"));
+                phoneOrMailText = editTextPhoneOrMailLogIn.getEditText().getText().toString().trim();
+                setLayotForEmailPassword();
+                editPassword.getEditText().setText((String) i.getSerializableExtra("password"));
+            }
         }
+    }
+
+    private void startMainActivity() {
+        Intent mainActivity = new Intent(getApplicationContext(), MainActivity.class);
+        FirebaseDBManager.setCurrentUserPerson(user);
+        startActivity(mainActivity);
     }
 
     private void findView() {
@@ -90,9 +99,6 @@ public class LoginActivity extends AppCompatActivity {
         editPassword = findViewById(R.id.login_input_password);
         codeEntryLayout = findViewById(R.id.code_entry);
         editCode = findViewById(R.id.login_input_sms);
-        mAuth = FirebaseAuth.getInstance();
-        logInBtn = findViewById(R.id.log_in_btn);
-        mReference = FirebaseDatabase.getInstance().getReference().child("users");
     }
 
     public void SignUpOnClick(View view) {
@@ -129,7 +135,6 @@ public class LoginActivity extends AppCompatActivity {
         public void onCodeSent(String s, PhoneAuthProvider.ForceResendingToken forceResendingToken) {
             super.onCodeSent(s, forceResendingToken);
             mVerificationId = s;
-            PhoneAuthProvider.ForceResendingToken mResendToken = forceResendingToken;
         }
     };
 
@@ -144,16 +149,14 @@ public class LoginActivity extends AppCompatActivity {
                     @Override
                     public void onComplete(@NonNull Task<AuthResult> task) {
                         if (task.isSuccessful()) {
-                            mReference.addChildEventListener(new ChildEventListener() {
+                            FirebaseDBManager.usersRef.addChildEventListener(new ChildEventListener() {
                                 @Override
                                 public void onChildAdded(@NonNull DataSnapshot dataSnapshot, @Nullable String s) {
                                     String userPhone = dataSnapshot.getKey();
 
                                     if (userPhone.equals(phoneOrMailText)) {
                                         user = dataSnapshot.getValue(Person.class);
-                                        Intent mainActivity = new Intent(getApplicationContext(), MainActivity.class);
-                                        mainActivity.putExtra("user", user);
-                                        startActivity(mainActivity);
+                                        startMainActivity();
                                     }
 
                                 }
@@ -196,24 +199,10 @@ public class LoginActivity extends AppCompatActivity {
             return;
         }
         if (android.util.Patterns.EMAIL_ADDRESS.matcher(phoneOrMailText).matches()) {
-            mAuth.fetchSignInMethodsForEmail(phoneOrMailText)
-                    .addOnCompleteListener(new OnCompleteListener<SignInMethodQueryResult>() {
-                        @Override
-                        public void onComplete(@NonNull Task<SignInMethodQueryResult> task) {
-                            if (task.getResult().getSignInMethods().isEmpty()) {
-                                editTextPhoneOrMailLogIn.setError("No Such User, Please Sign In");
-                            } else {
-                                email = true;
-                                phone = false;
-                                textBoxPhoneOrMailLayout.setVisibility(View.GONE);
-                                passwordOrCodeEntryLayout.setVisibility(View.VISIBLE);
-                                passwordEntryLayout.setVisibility(View.VISIBLE);
-                            }
-                        }
-                    });
+            singInWithMail();
             return;
         }
-        Pattern phonePattern = Pattern.compile("0([23489]|5[0123458]|77)([0-9]{7})");
+        Pattern phonePattern = Pattern.compile("05[0123458][0-9]{7}");
         if (phonePattern.matcher(phoneOrMailText).matches()) {
             FirebaseDBManager.usersRef.orderByKey().equalTo(phoneOrMailText).addValueEventListener(new ValueEventListener() {
                 @Override
@@ -228,7 +217,7 @@ public class LoginActivity extends AppCompatActivity {
                         codeEntryLayout.setVisibility(View.VISIBLE);
                         sendVerificationCode(phoneOrMailText);
                     } else {
-                        editTextPhoneOrMailLogIn.setError("No Such User, Please Sign In");
+                        editTextPhoneOrMailLogIn.setError("No Such User, Please Sign Up");
                     }
                 }
 
@@ -241,6 +230,28 @@ public class LoginActivity extends AppCompatActivity {
         }
         editTextPhoneOrMailLogIn.setError("Invalid Text");
         editTextPhoneOrMailLogIn.getEditText().setText(null);
+    }
+
+    private void singInWithMail() {
+        mAuth.fetchSignInMethodsForEmail(phoneOrMailText)
+                .addOnCompleteListener(new OnCompleteListener<SignInMethodQueryResult>() {
+                    @Override
+                    public void onComplete(@NonNull Task<SignInMethodQueryResult> task) {
+                        if (task.getResult().getSignInMethods().isEmpty()) {
+                            editTextPhoneOrMailLogIn.setError("No Such User, Please Sign In");
+                        } else {
+                            setLayotForEmailPassword();
+                        }
+                    }
+                });
+    }
+
+    private void setLayotForEmailPassword() {
+        email = true;
+        phone = false;
+        textBoxPhoneOrMailLayout.setVisibility(View.GONE);
+        passwordOrCodeEntryLayout.setVisibility(View.VISIBLE);
+        passwordEntryLayout.setVisibility(View.VISIBLE);
     }
 
     public void GoBackOnClick(View view) {
@@ -275,17 +286,15 @@ public class LoginActivity extends AppCompatActivity {
                         public void onComplete(@NonNull Task<AuthResult> task) {
                             if (task.isSuccessful()) {
                                 editPassword.setError(null);
-                                if (mAuth.getCurrentUser().isEmailVerified()) {
-                                    mReference.addChildEventListener(new ChildEventListener() {
+                                if (FirebaseDBManager.getCurrentUser().isEmailVerified()) {
+                                    FirebaseDBManager.usersRef.addChildEventListener(new ChildEventListener() {
                                         @Override
                                         public void onChildAdded(@NonNull DataSnapshot dataSnapshot, @Nullable String s) {
                                             String userEmail = dataSnapshot.child("email").getValue().toString().toLowerCase();
 
                                             if (userEmail.equals(phoneOrMailText.toLowerCase())) {
                                                 user = dataSnapshot.getValue(Person.class);
-                                                Intent mainActivity = new Intent(getApplicationContext(), MainActivity.class);
-                                                mainActivity.putExtra("user", user);
-                                                startActivity(mainActivity);
+                                                startMainActivity();
                                             }
 
                                         }

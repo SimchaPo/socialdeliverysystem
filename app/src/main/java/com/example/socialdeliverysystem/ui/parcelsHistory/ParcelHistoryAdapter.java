@@ -34,6 +34,11 @@ import java.util.Calendar;
 public class ParcelHistoryAdapter extends BaseAdapter {
     ArrayList<ParcelHistory> parcels;
     private static LayoutInflater inflater = null;
+    private TextView parcelIDTV;
+    private TextView deliverNameTV;
+    private TextView deliverPhoneNumberTV;
+    private TextView dateTV;
+    private ParcelHistory parcel;
 
     public ParcelHistoryAdapter(Activity context, ArrayList<ParcelHistory> parcels) {
         this.parcels = parcels;
@@ -59,17 +64,23 @@ public class ParcelHistoryAdapter extends BaseAdapter {
     public View getView(final int i, View convertView, ViewGroup viewGroup) {
         View itemView = convertView;
         itemView = (itemView == null) ? inflater.inflate(R.layout.parcel_history_list_item, null) : itemView;
-        TextView parcelIDTV = (TextView) itemView.findViewById(R.id.parcel_id);
-        TextView deliverNameTV = (TextView) itemView.findViewById(R.id.deliver_name);
-        TextView deliverPhoneNumberTV = (TextView) itemView.findViewById(R.id.deliver_phone_number);
-        TextView dateTV = (TextView) itemView.findViewById(R.id.date);
-        final ParcelHistory parcel = parcels.get(i);
+        findView(itemView);
+        parcel = parcels.get(i);
         parcelIDTV.setText(getBuilder("Parcel ID: ", parcel.getParcelID()), TextView.BufferType.SPANNABLE);
         deliverNameTV.setText(getBuilder("Deliver: ", parcel.getDeliver().getFirstName() + " " + parcel.getDeliver().getLastName()), TextView.BufferType.SPANNABLE);
         deliverPhoneNumberTV.setText(getBuilder("Deliver Phone Number: ", parcel.getDeliver().getPhoneNumber()), TextView.BufferType.SPANNABLE);
         dateTV.setText(getBuilder("Delivery Date: ", parcel.getDate()), TextView.BufferType.SPANNABLE);
         return itemView;
     }
+
+    private void findView(View itemView) {
+        parcelIDTV = (TextView) itemView.findViewById(R.id.parcel_id);
+        deliverNameTV = (TextView) itemView.findViewById(R.id.deliver_name);
+        deliverPhoneNumberTV = (TextView) itemView.findViewById(R.id.deliver_phone_number);
+        dateTV = (TextView) itemView.findViewById(R.id.date);
+    }
+
+
     private SpannableStringBuilder getBuilder(String s1, String s2) {
         SpannableStringBuilder builder = new SpannableStringBuilder();
         SpannableString str1 = new SpannableString(s1);

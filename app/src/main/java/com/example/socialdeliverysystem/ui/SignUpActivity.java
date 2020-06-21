@@ -56,24 +56,11 @@ public class SignUpActivity extends AppCompatActivity {
 
     public void SignUpOnClick(View view) {
         if (validData()) {
-            FirebaseDatabase.getInstance().getReference("users/" + editTextPhoneSignUp.getEditText().getText().toString()).addListenerForSingleValueEvent(new ValueEventListener() {
-                @Override
-                public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-                    if (dataSnapshot.exists())
-                        Toast.makeText(SignUpActivity.this, "exist",
-                                Toast.LENGTH_LONG).show();
-                }
-
-                @Override
-                public void onCancelled(@NonNull DatabaseError databaseError) {
-
-                }
-            });
-            FirebaseDBManager.usersRef.orderByKey().equalTo(editTextPhoneSignUp.getEditText().getText().toString()).addListenerForSingleValueEvent(new ValueEventListener() {
+            FirebaseDBManager.usersRef.orderByKey().equalTo(editTextPhoneSignUp.getEditText().getText().toString().trim()).addListenerForSingleValueEvent(new ValueEventListener() {
                 @Override
                 public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
                     if (dataSnapshot.exists()) {
-                        message = "Phone User Already Exists";
+                        message = "Phone User Already Exists For Verification";
                         Toast.makeText(SignUpActivity.this, message,
                                 Toast.LENGTH_LONG).show();
                     } else {
@@ -93,9 +80,12 @@ public class SignUpActivity extends AppCompatActivity {
                                             }
                                         }
                                     });
-                                    // Sign in success, update UI with the signed-in user's information
+                                    Intent logInActivity = new Intent(getApplicationContext(), LoginActivity.class);
+                                    logInActivity.putExtra("email", editTextEmailSignUp.getEditText().getText().toString());
+                                    logInActivity.putExtra("password", editTextPasswordSignUp.getEditText().getText().toString());
+                                    startActivity(logInActivity);
+
                                 } else {
-                                    // If sign in fails, display a message to the user.
                                     message = "Mail User Already Exists For Verification";
                                     Toast.makeText(SignUpActivity.this, message,
                                             Toast.LENGTH_LONG).show();
@@ -130,9 +120,9 @@ public class SignUpActivity extends AppCompatActivity {
     private Person getPersonFromScreen() {
         String firstName = editTextFirstNameSignUp.getEditText().getText().toString();
         String lastName = editTextLastNameSignUp.getEditText().getText().toString();
-        String email = editTextEmailSignUp.getEditText().getText().toString();
-        String phoneNumber = editTextPhoneSignUp.getEditText().getText().toString();
-        String id = editTextIdSignUp.getEditText().getText().toString();
+        String email = editTextEmailSignUp.getEditText().getText().toString().trim();
+        String phoneNumber = editTextPhoneSignUp.getEditText().getText().toString().trim();
+        String id = editTextIdSignUp.getEditText().getText().toString().trim();
         String address = editTextAddressSignUp.getEditText().getText().toString();
         return new Person(firstName, lastName, email, phoneNumber, id, address);
     }
@@ -140,22 +130,7 @@ public class SignUpActivity extends AppCompatActivity {
     private void addUserToDB() {
         try {
             Person user = getPersonFromScreen();
-            FirebaseDBManager.addUserToFirebase(user, new FirebaseDBManager.Action<String>() {
-                @Override
-                public void onSuccess(String obj) {
-
-                }
-
-                @Override
-                public void onFailure(Exception exception) {
-
-                }
-
-                @Override
-                public void onProgress(String status, double percent) {
-
-                }
-            });
+            FirebaseDBManager.addUserToFirebase(user);
         } catch (Exception e) {
             Toast.makeText(getBaseContext(), "Error ", Toast.LENGTH_LONG).show();
         }

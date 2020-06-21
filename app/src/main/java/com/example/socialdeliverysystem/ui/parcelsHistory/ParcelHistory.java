@@ -1,6 +1,5 @@
 package com.example.socialdeliverysystem.ui.parcelsHistory;
 
-import com.example.socialdeliverysystem.Entites.Parcel;
 import com.example.socialdeliverysystem.Entites.Person;
 
 public class ParcelHistory {

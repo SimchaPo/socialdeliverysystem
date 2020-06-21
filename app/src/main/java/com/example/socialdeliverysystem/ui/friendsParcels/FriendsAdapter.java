@@ -18,6 +18,7 @@ import android.widget.TextView;
 import androidx.annotation.NonNull;
 
 import com.example.socialdeliverysystem.R;
+import com.example.socialdeliverysystem.Utils.FirebaseDBManager;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
@@ -35,6 +36,15 @@ public class FriendsAdapter extends BaseAdapter {
     ArrayList<FriendsParcel> parcels;
     private static LayoutInflater inflater = null;
     private DatabaseReference mReference;
+    private View itemView;
+    private TextView parcelIDTV;
+    private TextView addresseeNameTV;
+    private TextView storageLocationTV;
+    private TextView addresseeAddressTV;
+    private TextView dist;
+    private Button takeBtn;
+    private Switch canTakeSwitch;
+    private FriendsParcel parcel;
 
     public FriendsAdapter(Activity context, ArrayList<FriendsParcel> parcels) {
         this.parcels = parcels;
@@ -58,18 +68,34 @@ public class FriendsAdapter extends BaseAdapter {
 
     @Override
     public View getView(final int i, View convertView, ViewGroup viewGroup) {
-        View itemView = convertView;
+        itemView = convertView;
         itemView = (itemView == null) ? inflater.inflate(R.layout.friends_parcels_list_item, null) : itemView;
-        TextView parcelIDTV = (TextView) itemView.findViewById(R.id.parcel_id);
-        TextView addresseeNameTV = (TextView) itemView.findViewById(R.id.addressee_name);
-        TextView storageLocationTV = (TextView) itemView.findViewById(R.id.storage_location);
-        TextView addresseeAddressTV = (TextView) itemView.findViewById(R.id.addressee_address);
-        TextView dist = (TextView) itemView.findViewById(R.id.distance);
-        final Button takeBtn = (Button) itemView.findViewById(R.id.take_pkg_btn);
-        final Switch canTakeSwitch = (Switch) itemView.findViewById(R.id.can_take_switch);
-        final FriendsParcel parcel = parcels.get(i);
-        mReference = FirebaseDatabase.getInstance().getReference("packages/newPackages" + '/' + parcel.getAddressee().getPhoneNumber() + '/' +
-                parcel.getParcelID() + "/delivers" + '/' + parcel.getUser().getPhoneNumber());
+        findView();
+        parcel = parcels.get(i);
+        mReference = FirebaseDBManager.newPackagesRef.child(parcel.getAddressee().getPhoneNumber() + '/' +
+                parcel.getParcelID() + "/delivers" + '/' + FirebaseDBManager.getCurrentUserPerson().getPhoneNumber()).getRef();
+        mReferanceListener(takeBtn, canTakeSwitch);
+        switchListener(canTakeSwitch, parcel);
+        takeBtnListener(takeBtn, parcel);
+        parcelIDTV.setText(getBuilder("Parcel ID: ", parcel.getParcelID()), TextView.BufferType.SPANNABLE);
+        storageLocationTV.setText(getBuilder("Storage Location:\n", parcel.getParcel().getStorage()), TextView.BufferType.SPANNABLE);
+        addresseeAddressTV.setText(getBuilder("Addressee Address:\n", parcel.getAddresseeAddress()), TextView.BufferType.SPANNABLE);
+        addresseeNameTV.setText(getBuilder("Addressee Name: ", parcel.getAddresseeName()), TextView.BufferType.SPANNABLE);
+        dist.setText(getBuilder("Distance: ", String.format("%.2f", parcel.getDistance()) + " KM"), TextView.BufferType.SPANNABLE);
+        return itemView;
+    }
+
+    private void findView() {
+        parcelIDTV = (TextView) itemView.findViewById(R.id.parcel_id);
+        addresseeNameTV = (TextView) itemView.findViewById(R.id.addressee_name);
+        storageLocationTV = (TextView) itemView.findViewById(R.id.storage_location);
+        addresseeAddressTV = (TextView) itemView.findViewById(R.id.addressee_address);
+        dist = (TextView) itemView.findViewById(R.id.distance);
+        takeBtn = (Button) itemView.findViewById(R.id.take_pkg_btn);
+        canTakeSwitch = (Switch) itemView.findViewById(R.id.can_take_switch);
+    }
+
+    private void mReferanceListener(final Button takeBtn, final Switch canTakeSwitch) {
         mReference.addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
@@ -90,11 +116,32 @@ public class FriendsAdapter extends BaseAdapter {
 
             }
         });
+    }
+
+    private void takeBtnListener(final Button takeBtn, final FriendsParcel parcel) {
+        takeBtn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                takeBtn.setEnabled(false);
+                takeBtn.setText("Token");
+                FirebaseDBManager.newPackagesRef.child(parcel.getAddressee().getPhoneNumber() + '/' +
+                        parcel.getParcelID()).removeValue();
+                mReference = FirebaseDBManager.oldPackagesRef.child(parcel.getAddressee().getPhoneNumber() + '/' +
+                        parcel.getParcelID()).getRef();
+                mReference.setValue(parcel.getParcel());
+                mReference.child("deliver").setValue(FirebaseDBManager.getCurrentUserPerson());
+                mReference.child("parcelID").setValue(parcel.getParcelID());
+                mReference.child("date").setValue(new SimpleDateFormat("dd/MM/yyyy HH:mm:ss").format(Calendar.getInstance().getTime()));
+            }
+        });
+    }
+
+    private void switchListener(Switch canTakeSwitch, final FriendsParcel parcel) {
         canTakeSwitch.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
             @Override
             public void onCheckedChanged(CompoundButton compoundButton, boolean b) {
-                mReference = FirebaseDatabase.getInstance().getReference("packages/newPackages" + '/' + parcel.getAddressee().getPhoneNumber() + '/' +
-                        parcel.getParcelID() + "/delivers" + '/' + parcel.getUser().getPhoneNumber());
+                mReference = FirebaseDBManager.newPackagesRef.child(parcel.getAddressee().getPhoneNumber() + '/' +
+                        parcel.getParcelID() + "/delivers" + '/' + FirebaseDBManager.getCurrentUserPerson().getPhoneNumber()).getRef();
                 if (b) {
                     mReference.setValue("applied");
                 } else {
@@ -103,27 +150,6 @@ public class FriendsAdapter extends BaseAdapter {
 
             }
         });
-        takeBtn.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                takeBtn.setEnabled(false);
-                takeBtn.setText("Token");
-                FirebaseDatabase.getInstance().getReference("packages/newPackages" + '/' + parcel.getAddressee().getPhoneNumber() + '/' +
-                        parcel.getParcelID()).removeValue();
-                mReference = FirebaseDatabase.getInstance().getReference("packages/oldPackages" + '/' + parcel.getAddressee().getPhoneNumber() + '/' +
-                        parcel.getParcelID());
-                mReference.setValue(parcel.getParcel());
-                mReference.child("deliver").setValue(parcel.getUser());
-                mReference.child("parcelID").setValue(parcel.getParcelID());
-                mReference.child("date").setValue(new SimpleDateFormat("dd/MM/yyyy HH:mm:ss").format(Calendar.getInstance().getTime()));
-            }
-        });
-        parcelIDTV.setText(getBuilder("Parcel ID: ", parcel.getParcelID()), TextView.BufferType.SPANNABLE);
-        storageLocationTV.setText(getBuilder("Storage Location:\n", parcel.getParcel().getStorage()), TextView.BufferType.SPANNABLE);
-        addresseeAddressTV.setText(getBuilder("Addressee Address:\n", parcel.getAddresseeAddress()), TextView.BufferType.SPANNABLE);
-        addresseeNameTV.setText(getBuilder("Addressee Name: ", parcel.getAddresseeName()), TextView.BufferType.SPANNABLE);
-        dist.setText(getBuilder("Distance: ", String.format("%.2f", parcel.getDistance()) + " KM"), TextView.BufferType.SPANNABLE);
-        return itemView;
     }
 
     private SpannableStringBuilder getBuilder(String s1, String s2) {

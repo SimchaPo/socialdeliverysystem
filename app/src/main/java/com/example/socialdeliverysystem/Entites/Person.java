@@ -9,7 +9,6 @@ public class Person implements Serializable {
     private String phoneNumber;
     private String ID;
     private String address;
-    //private String password;
 
     public Person() {
     }
@@ -21,7 +20,6 @@ public class Person implements Serializable {
         this.phoneNumber = phoneNumber;
         this.ID = ID;
         this.address = address;
-        //  this.password = password;
     }
 
     public String getFirstName() {
@@ -74,7 +72,6 @@ public class Person implements Serializable {
 
     @Override
     public String toString() {
-
         return "User Details:\n" + this.getFirstName() + " " + this.getLastName() + "\n" + this.getID() + "\n"
                 + this.getEmail() + "\n" + this.getPhoneNumber() + "\n" + this.getAddress();
     }

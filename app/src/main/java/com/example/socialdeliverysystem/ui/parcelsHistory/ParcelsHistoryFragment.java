@@ -16,6 +16,7 @@ import androidx.lifecycle.ViewModelProviders;
 import com.example.socialdeliverysystem.Entites.Parcel;
 import com.example.socialdeliverysystem.Entites.Person;
 import com.example.socialdeliverysystem.R;
+import com.example.socialdeliverysystem.Utils.FirebaseDBManager;
 import com.example.socialdeliverysystem.ui.MainActivity;
 import com.example.socialdeliverysystem.ui.userParcels.UserParcel;
 import com.example.socialdeliverysystem.ui.userParcels.UserParcelAdapter;
@@ -29,21 +30,24 @@ import java.util.ArrayList;
 
 public class ParcelsHistoryFragment extends Fragment {
 
-    private Person user;
     private ArrayList<ParcelHistory> parcelArrayList = new ArrayList<>();
     private ParcelHistoryAdapter parcelArrayAdapter;
-    private DatabaseReference mReference;
     private ListView parcelListView;
 
     public View onCreateView(@NonNull LayoutInflater inflater,
                              ViewGroup container, Bundle savedInstanceState) {
         View root = inflater.inflate(R.layout.fragment_parcels_history, container, false);
-        user = ((MainActivity) getActivity()).getUser();
         parcelArrayAdapter = new ParcelHistoryAdapter(getActivity(), parcelArrayList);
         parcelListView = (ListView) root.findViewById(R.id.list_view);
         parcelArrayList.clear();
         parcelListView.setAdapter(parcelArrayAdapter);
-        FirebaseDatabase.getInstance().getReference("packages/oldPackages" + '/' + user.getPhoneNumber()).addChildEventListener(new ChildEventListener() {
+        setFurebaseListener();
+        return root;
+    }
+
+    private void setFurebaseListener() {
+        FirebaseDBManager.oldPackagesRef.child(FirebaseDBManager.getCurrentUserPerson().getPhoneNumber()).getRef()
+                .addChildEventListener(new ChildEventListener() {
             @Override
             public void onChildAdded(@NonNull DataSnapshot dataSnapshot, @Nullable String s) {
                 parcelArrayList.add(dataSnapshot.getValue(ParcelHistory.class));
@@ -70,6 +74,5 @@ public class ParcelsHistoryFragment extends Fragment {
 
             }
         });
-        return root;
     }
 }
