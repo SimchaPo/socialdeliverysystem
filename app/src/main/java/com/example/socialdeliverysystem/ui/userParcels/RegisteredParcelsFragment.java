@@ -1,3 +1,5 @@
+//Ari Rubin 315528547 & Simcha Podolsky 311215149
+//Simcha Podolsky 311215149 & Ari Rubin 315528547
 package com.example.socialdeliverysystem.ui.userParcels;
 
 import android.annotation.SuppressLint;
@@ -28,7 +30,6 @@ import java.util.ArrayList;
 
 public class RegisteredParcelsFragment extends Fragment {
 
-    //private Person user;
     private ArrayList<UserParcel> parcelArrayList = new ArrayList<>();
     private UserParcelAdapter parcelArrayAdapter;
     private DatabaseReference mReference;

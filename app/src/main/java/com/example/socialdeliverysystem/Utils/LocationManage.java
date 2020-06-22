@@ -1,3 +1,5 @@
+//Ari Rubin 315528547 & Simcha Podolsky 311215149
+//Simcha Podolsky 311215149 & Ari Rubin 315528547
 package com.example.socialdeliverysystem.Utils;
 
 import androidx.annotation.NonNull;

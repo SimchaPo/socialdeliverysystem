@@ -1,3 +1,5 @@
+//Ari Rubin 315528547 & Simcha Podolsky 311215149
+//Simcha Podolsky 311215149 & Ari Rubin 315528547
 package com.example.socialdeliverysystem;
 
 import android.app.Service;
@@ -13,7 +15,6 @@ import com.example.socialdeliverysystem.Utils.FirebaseDBManager;
 import com.google.firebase.database.ChildEventListener;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
-import com.google.firebase.database.FirebaseDatabase;
 
 import org.jetbrains.annotations.NotNull;
 
