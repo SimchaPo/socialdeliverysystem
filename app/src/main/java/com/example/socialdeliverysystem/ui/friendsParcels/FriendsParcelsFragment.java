@@ -47,12 +47,6 @@ public class FriendsParcelsFragment extends Fragment {
         listViewParcels.setAdapter(parcelAdapter);
         parcels.clear();
         setFirebaseListener();
-        listViewParcels.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-            @Override
-            public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
-                Toast.makeText(getActivity(), "item clicked: " + i, Toast.LENGTH_SHORT).show();
-            }
-        });
         return root;
     }
 

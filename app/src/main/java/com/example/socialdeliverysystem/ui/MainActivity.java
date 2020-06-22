@@ -33,7 +33,6 @@ public class MainActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        Intent i = getIntent();
         serviceIntent = new Intent(this, MyBroadcastService.class);
         startService(serviceIntent);
         setContentView(R.layout.activity_main);
@@ -53,15 +52,6 @@ public class MainActivity extends AppCompatActivity {
         TextView userEmailTextView = (TextView) hView.findViewById(R.id.userEmail);
         userNameTextView.setText(FirebaseDBManager.getCurrentUserPerson().getFirstName() + " " + FirebaseDBManager.getCurrentUserPerson().getLastName());
         userEmailTextView.setText(FirebaseDBManager.getCurrentUserPerson().getEmail());
-
-        NotificationCompat.Builder builder = new NotificationCompat.Builder(this, "simcha")
-                .setSmallIcon(R.drawable.ic_launcher_foreground)
-                .setContentTitle("DDB! new package")
-                .setContentText("You receive new package")
-                .setDefaults(NotificationCompat.DEFAULT_ALL)
-                .setPriority(NotificationCompat.PRIORITY_MAX);
-        NotificationManagerCompat notificationManager = NotificationManagerCompat.from(this);
-        notificationManager.notify(0, builder.build());
     }
 
     @Override

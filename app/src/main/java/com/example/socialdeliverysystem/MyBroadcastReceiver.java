@@ -29,13 +29,15 @@ public class MyBroadcastReceiver extends BroadcastReceiver {
                 case "no_internet_connection":
                     sendNotification(context,"Social Delivery! no internet connection", "Check your connection" );
                     break;
+                default:
+                    break;
             }
         }
     }
 
     private void sendNotification(Context context, String title, String text){
         notificationBuilder = new NotificationCompat.Builder(context, channelId)
-                .setSmallIcon(R.drawable.ic_launcher_foreground)
+                .setSmallIcon(R.drawable.fui_ic_microsoft_24dp)
                 .setContentTitle(title)
                 .setContentText(text)
                 .setDefaults(NotificationCompat.DEFAULT_ALL)
@@ -45,20 +47,16 @@ public class MyBroadcastReceiver extends BroadcastReceiver {
     }
 
     public static String createNotificationChannel(Context context) {
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-            String channelId = "ChannelId";
-            CharSequence channelName = "Social Delivery";
-            String channelDescription = "Social Delivery Alert";
-            int channelImportance = NotificationManager.IMPORTANCE_DEFAULT;
-            NotificationChannel notificationChannel = new NotificationChannel(channelId, channelName, channelImportance);
-            notificationChannel.setDescription(channelDescription);
-            notificationChannel.enableVibration(true);
-            NotificationManager notificationManager = (NotificationManager) context.getSystemService(Context.NOTIFICATION_SERVICE);
-            assert notificationManager != null;
-            notificationManager.createNotificationChannel(notificationChannel);
-            return channelId;
-        } else {
-            return null;
-        }
+        String channelId = "ChannelId";
+        CharSequence channelName = "Social Delivery";
+        String channelDescription = "Social Delivery Alert";
+        int channelImportance = NotificationManager.IMPORTANCE_DEFAULT;
+        NotificationChannel notificationChannel = new NotificationChannel(channelId, channelName, channelImportance);
+        notificationChannel.setDescription(channelDescription);
+        notificationChannel.enableVibration(true);
+        NotificationManager notificationManager = (NotificationManager) context.getSystemService(Context.NOTIFICATION_SERVICE);
+        assert notificationManager != null;
+        notificationManager.createNotificationChannel(notificationChannel);
+        return channelId;
     }
 }

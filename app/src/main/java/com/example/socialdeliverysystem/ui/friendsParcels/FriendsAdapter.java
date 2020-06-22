@@ -123,7 +123,7 @@ public class FriendsAdapter extends BaseAdapter {
             @Override
             public void onClick(View view) {
                 takeBtn.setEnabled(false);
-                takeBtn.setText("Token");
+                takeBtn.setText("Taken");
                 FirebaseDBManager.newPackagesRef.child(parcel.getAddressee().getPhoneNumber() + '/' +
                         parcel.getParcelID()).removeValue();
                 mReference = FirebaseDBManager.oldPackagesRef.child(parcel.getAddressee().getPhoneNumber() + '/' +
