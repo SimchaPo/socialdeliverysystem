@@ -88,6 +88,7 @@ public class LoginActivity extends AppCompatActivity {
     private void startMainActivity() {
         Intent mainActivity = new Intent(getApplicationContext(), MainActivity.class);
         FirebaseDBManager.setCurrentUserPerson(user);
+        this.finishAffinity();
         startActivity(mainActivity);
     }
 
